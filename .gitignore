@@ -1,0 +1,14 @@
+# Build
+out/
+target/
+
+# Java
+*.class
+
+# IDE
+.idea/
+
+# Logs
+*.log
+launch_out.txt
+launch_err.txt

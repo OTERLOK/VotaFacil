@@ -1,0 +1,4 @@
+CAN001;Juan Pérez;Partido Progreso;Educación gratuita, salud y vivienda para todos
+CAN002;María González;Partido Unión;Seguridad ciudadana y empleo para la juventud
+CAN003;Carlos Rodríguez;Partido Demócrata;Transparencia y lucha contra la corrupción
+CAN004;Ana Martínez;Partido Fuerza;Apoyo a pequeños emprendedores y al comercio local

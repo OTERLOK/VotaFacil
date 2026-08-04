@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-shared-configuration>
+    <properties xmlns="http://www.netbeans.org/ns/maven-properties-data/1">
+        <netbeans.checkstyle.format>true</netbeans.checkstyle.format>
+    </properties>
+    <data xmlns="http://www.netbeans.org/ns/maven-profiler/3">
+        <netbeans-hint>org.openjfx:javafx-maven-plugin:0.0.8:run</netbeans-hint>
+    </data>
+</project-shared-configuration>

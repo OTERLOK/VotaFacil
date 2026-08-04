@@ -1,0 +1,10 @@
+E001;12345678;Ana López;clave123;false
+E002;23456789;Luisa Pérez;clave456;false
+E003;34567890;Carlos Gómez;clave789;false
+E004;45678901;Marta Ruiz;claveabc;false
+E005;56789012;Jorge Díaz;clavedef;false
+E006;67890123;Sofía Torres;claveghi;false
+E007;78901234;Diego Morales;clavejkl;false
+E008;89012345;Valentina Castro;clavemno;false
+E009;90123456;Santiago Ramos;clavepqr;false
+E010;11223344;Isabella Flores;clavestu;false
