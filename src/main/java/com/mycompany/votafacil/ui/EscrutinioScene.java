@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -22,16 +23,11 @@ import com.mycompany.votafacil.model.Candidato;
 import com.mycompany.votafacil.model.ResultadoEscrutinio;
 import com.mycompany.votafacil.service.ServicioVotacion;
 
-/**
- * Pantalla de escrutinio. Cuenta cuántos votos recibió cada candidato y
- * muestra los resultados ordenados de mayor a menor, el total de votos
- * emitidos, el total de electores habilitados y el porcentaje de
- * participación. Permite exportar los resultados a CSV.
- */
 public class EscrutinioScene {
 
-    public static void mostrar() {
+    public static Parent crearContenido() {
         Label lblTitulo = new Label("Escrutinio de la votación");
+        lblTitulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         TableView<ResultadoEscrutinio> tabla = new TableView<>();
         tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -62,10 +58,10 @@ public class EscrutinioScene {
                 + String.format("%.1f%%", ServicioVotacion.porcentajeParticipacion()));
 
         Button btnExportar = new Button("Exportar a CSV");
-        Button btnVolver = new Button("Volver");
+        Button btnVolver = new Button("Volver al menú");
 
         btnExportar.setOnAction(e -> exportar());
-        btnVolver.setOnAction(e -> MenuAdminScene.mostrar());
+        btnVolver.setOnAction(e -> MenuAdminScene.mostrarBienvenida());
 
         HBox filaBotones = new HBox(10);
         filaBotones.getChildren().addAll(btnExportar, btnVolver);
@@ -73,9 +69,13 @@ public class EscrutinioScene {
 
         VBox root = new VBox(10);
         root.getChildren().addAll(lblTitulo, tabla, lblResumen, filaBotones);
-        root.setPadding(new Insets(15));
 
-        Navegacion.cambiarEscena(new Scene(root, 800, 540));
+        return root;
+    }
+
+    public static void mostrar() {
+        Parent contenido = crearContenido();
+        Navegacion.cambiarEscena(new Scene(contenido, 800, 540));
     }
 
     private static void exportar() {

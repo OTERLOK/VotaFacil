@@ -5,34 +5,40 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 import com.mycompany.votafacil.data.DatosVotacion;
 import com.mycompany.votafacil.service.ServicioVotacion;
 
-/**
- * Menú principal del administrador con acceso a la gestión de candidatos,
- * electores, apertura o cierre de la votación, escrutinio, búsqueda global
- * y exportación de datos.
- */
 public class MenuAdminScene {
 
+    private static StackPane panelDerecho;
+    private static Button btnVotacion;
+    private static Button btnEscrutinio;
+
     public static void mostrar() {
-        Label lblTitulo = new Label("Menú del Administrador");
+        Button btnCandidatos = crearBotonNav("Gestionar Candidatos");
+        Button btnElectores = crearBotonNav("Gestionar Electores");
+        btnVotacion = crearBotonNav("");
+        btnEscrutinio = crearBotonNav("Ver Escrutinio");
+        Button btnBusqueda = crearBotonNav("Búsqueda Global");
+        Button btnExportar = crearBotonNav("Exportar Datos");
+        Button btnCerrar = crearBotonNav("Cerrar Sesión");
 
-        Button btnCandidatos = new Button("Gestionar Candidatos");
-        Button btnElectores = new Button("Gestionar Electores");
-        Button btnVotacion = new Button();
-        Button btnEscrutinio = new Button("Ver Escrutinio");
-        Button btnBusqueda = new Button("Búsqueda Global");
-        Button btnExportar = new Button("Exportar Datos");
-        Button btnCerrar = new Button("Cerrar Sesión");
-
-        actualizarBotonVotacion(btnVotacion);
+        actualizarBotonVotacion();
         btnEscrutinio.setDisable(ServicioVotacion.isVotacionAbierta());
 
-        btnCandidatos.setOnAction(e -> CandidatosScene.mostrar());
-        btnElectores.setOnAction(e -> ElectoresScene.mostrar());
+        btnCandidatos.setOnAction(e -> cargarContenido(CandidatosScene.crearContenido()));
+        btnElectores.setOnAction(e -> cargarContenido(ElectoresScene.crearContenido()));
         btnVotacion.setOnAction(e -> {
             if (ServicioVotacion.isVotacionAbierta()) {
                 ServicioVotacion.cerrarVotacion();
@@ -42,32 +48,107 @@ public class MenuAdminScene {
                     Dialogos.error(error);
                 }
             }
-            actualizarBotonVotacion(btnVotacion);
+            actualizarBotonVotacion();
             btnEscrutinio.setDisable(ServicioVotacion.isVotacionAbierta());
         });
-        btnEscrutinio.setOnAction(e -> EscrutinioScene.mostrar());
-        btnBusqueda.setOnAction(e -> BusquedaScene.mostrar());
-        btnExportar.setOnAction(e -> ExportacionScene.mostrar());
+        btnEscrutinio.setOnAction(e -> cargarContenido(EscrutinioScene.crearContenido()));
+        btnBusqueda.setOnAction(e -> cargarContenido(BusquedaScene.crearContenido()));
+        btnExportar.setOnAction(e -> cargarContenido(ExportacionScene.crearContenido()));
         btnCerrar.setOnAction(e -> {
             DatosVotacion.guardar();
             ServicioVotacion.cerrarSesion();
             LoginScene.mostrar();
         });
 
-        VBox root = new VBox(15);
-        root.getChildren().addAll(lblTitulo, btnCandidatos, btnElectores, btnVotacion,
-                btnEscrutinio, btnBusqueda, btnExportar, btnCerrar);
-        root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(30));
+        VBox sidebar = new VBox(5);
+        sidebar.setStyle("-fx-background-color: #2c3e50; -fx-padding: 15;");
+        sidebar.setPrefWidth(220);
+        sidebar.getChildren().addAll(
+                btnCandidatos, btnElectores, btnVotacion,
+                btnEscrutinio, btnBusqueda, btnExportar,
+                new Separator(),
+                btnCerrar);
 
-        Navegacion.cambiarEscena(new Scene(root, 440, 440));
+        panelDerecho = new StackPane();
+        panelDerecho.setStyle("-fx-background-color: #f5f6fa;");
+        panelDerecho.getChildren().add(crearBienvenida());
+        StackPane.setMargin(panelDerecho.getChildren().get(0), new Insets(20));
+
+        BorderPane root = new BorderPane();
+        root.setLeft(sidebar);
+        root.setCenter(panelDerecho);
+
+        Navegacion.cambiarEscena(new Scene(root, 1000, 600));
     }
 
-    private static void actualizarBotonVotacion(Button boton) {
+    public static void cargarContenido(javafx.scene.Parent contenido) {
+        panelDerecho.getChildren().clear();
+        contenido.setStyle("-fx-background-color: #f5f6fa;");
+        StackPane.setMargin(contenido, new Insets(20));
+        panelDerecho.getChildren().add(contenido);
+    }
+
+    public static void mostrarBienvenida() {
+        panelDerecho.getChildren().clear();
+        VBox bienvenida = crearBienvenida();
+        StackPane.setMargin(bienvenida, new Insets(20));
+        panelDerecho.getChildren().add(bienvenida);
+    }
+
+    private static VBox crearBienvenida() {
+        Text logo = new Text("\uD83D\uDF73");
+        logo.setFont(Font.font(72));
+
+        Text nombre = new Text("VotaFacil");
+        nombre.setFont(Font.font("System", FontWeight.BOLD, 42));
+        nombre.setFill(Color.web("#2c3e50"));
+
+        Text slogan = new Text("La forma más sencilla de votar");
+        slogan.setFont(Font.font("System", 18));
+        slogan.setFill(Color.web("#7f8c8d"));
+
+        Line linea = new Line(0, 0, 200, 0);
+        linea.setStroke(Color.web("#bdc3c7"));
+        linea.setStrokeWidth(2);
+
+        VBox vbox = new VBox(12, logo, nombre, linea, slogan);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setMaxWidth(400);
+        return vbox;
+    }
+
+    private static Button crearBotonNav(String texto) {
+        Button boton = new Button(texto);
+        boton.setMaxWidth(Double.MAX_VALUE);
+        boton.setStyle(
+                "-fx-background-color: transparent; " +
+                "-fx-text-fill: white; " +
+                "-fx-font-size: 14px; " +
+                "-fx-padding: 10 15; " +
+                "-fx-alignment: CENTER_LEFT; " +
+                "-fx-cursor: hand;");
+        boton.setOnMouseEntered(e -> boton.setStyle(
+                "-fx-background-color: #34495e; " +
+                "-fx-text-fill: white; " +
+                "-fx-font-size: 14px; " +
+                "-fx-padding: 10 15; " +
+                "-fx-alignment: CENTER_LEFT; " +
+                "-fx-cursor: hand;"));
+        boton.setOnMouseExited(e -> boton.setStyle(
+                "-fx-background-color: transparent; " +
+                "-fx-text-fill: white; " +
+                "-fx-font-size: 14px; " +
+                "-fx-padding: 10 15; " +
+                "-fx-alignment: CENTER_LEFT; " +
+                "-fx-cursor: hand;"));
+        return boton;
+    }
+
+    private static void actualizarBotonVotacion() {
         if (ServicioVotacion.isVotacionAbierta()) {
-            boton.setText("Cerrar Votación");
+            btnVotacion.setText("Cerrar Votación");
         } else {
-            boton.setText("Abrir Votación");
+            btnVotacion.setText("Abrir Votación");
         }
     }
 }

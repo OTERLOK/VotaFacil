@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VotaFacil - Documentacion completa</title>
+  <style>
+    /* ===== Reset y base ===== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --color-oscuro: #2c3e50;
+      --color-medio: #34495e;
+      --color-claro: #f5f6fa;
+      --color-borde: #dcdde1;
+      --color-texto: #2d3436;
+      --color-texto-secundario: #636e72;
+      --color-acento: #2980b9;
+      --color-exito: #27ae60;
+      --color-alerta: #e74c3c;
+      --color-fondo-codigo: #2d2d2d;
+      --color-texto-codigo: #f8f8f2;
+      --fuente: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --ancho-max: 1100px;
+      --radio: 8px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: var(--fuente);
+      color: var(--color-texto);
+      background: var(--color-claro);
+      line-height: 1.7;
+      font-size: 16px;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: var(--color-acento);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    a:hover {
+      color: var(--color-oscuro);
+      text-decoration: underline;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ===== Navbar ===== */
+    .navbar {
+      background: var(--color-oscuro);
+      color: #fff;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .navbar-inner {
+      max-width: var(--ancho-max);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .navbar-brand:hover {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .navbar-brand .logo-icono {
+      font-size: 1.6rem;
+    }
+
+    .navbar-links {
+      display: flex;
+      list-style: none;
+      gap: 6px;
+    }
+
+    .navbar-links a {
+      color: rgba(255,255,255,0.85);
+      padding: 8px 14px;
+      border-radius: var(--radio);
+      font-size: 0.9rem;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .navbar-links a:hover,
+    .navbar-links a.activo {
+      background: var(--color-medio);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    /* ===== Boton flotante (movil) ===== */
+    .fab {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      right: 48px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--color-oscuro);
+      color: #fff;
+      border: none;
+      font-size: 1.15rem;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+      z-index: 2000;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .fab:hover {
+      background: var(--color-medio);
+      transform: scale(1.08);
+    }
+
+    .fab.activo {
+      background: var(--color-alerta);
+    }
+
+    /* ===== Menu movil a pantalla completa ===== */
+    .menu-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(135deg, var(--color-oscuro) 0%, var(--color-medio) 100%);
+      color: #fff;
+      z-index: 1500;
+      overflow-y: auto;
+      transform: translateX(-100%);
+      transition: transform 300ms ease;
+    }
+
+    .menu-overlay.abierto {
+      transform: translateX(0);
+    }
+
+    .menu-overlay-inner {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .menu-overlay-inner .logo-grande {
+      font-size: 3.2rem;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .menu-overlay-inner h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .menu-overlay-inner .eslogan {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 22px;
+    }
+
+    .menu-overlay-inner a {
+      display: block;
+      width: 100%;
+      max-width: 320px;
+      padding: 13px 20px;
+      margin: 4px 0;
+      border-radius: var(--radio);
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .menu-overlay-inner a:hover {
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    /* ===== Layout principal ===== */
+    .contenedor {
+      max-width: var(--ancho-max);
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* ===== Hero / Portada ===== */
+    .hero {
+      text-align: center;
+      padding: 60px 20px 50px;
+      background: linear-gradient(135deg, var(--color-oscuro) 0%, var(--color-medio) 100%);
+      color: #fff;
+      margin-bottom: 40px;
+      scroll-margin-top: 60px;
+    }
+
+    .hero .logo-grande {
+      font-size: 4rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero .eslogan {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 30px;
+    }
+
+    .hero-linea {
+      width: 100px;
+      height: 3px;
+      background: rgba(255,255,255,0.4);
+      margin: 0 auto 30px;
+      border-radius: 2px;
+    }
+
+    /* ===== Indice / Tabla de contenidos ===== */
+    .indice {
+      background: #fff;
+      border: 1px solid var(--color-borde);
+      border-radius: var(--radio);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      padding: 26px 30px;
+      margin: 0 0 50px;
+    }
+
+    .indice h2 {
+      font-size: 1.3rem;
+      color: var(--color-oscuro);
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid var(--color-acento);
+      display: inline-block;
+    }
+
+    .indice ul {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 4px 30px;
+      margin: 0;
+    }
+
+    .indice li {
+      margin: 4px 0;
+    }
+
+    .indice a {
+      display: block;
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: var(--color-medio);
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .indice a:hover {
+      background: var(--color-claro);
+      color: var(--color-oscuro);
+      text-decoration: none;
+    }
+
+    /* ===== Separador entre secciones ===== */
+    .separador {
+      border: none;
+      border-top: 2px dashed var(--color-borde);
+      margin: 50px 0;
+    }
+
+    /* ===== Tarjetas ===== */
+    .tarjetas {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .tarjeta {
+      background: #fff;
+      border-radius: var(--radio);
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 1px solid var(--color-borde);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .tarjeta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .tarjeta h3 {
+      font-size: 1.1rem;
+      color: var(--color-oscuro);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tarjeta p {
+      color: var(--color-texto-secundario);
+      font-size: 0.95rem;
+    }
+
+    /* ===== Secciones ===== */
+    .seccion {
+      margin-bottom: 50px;
+      scroll-margin-top: 80px;
+    }
+
+    .seccion h2 {
+      font-size: 1.6rem;
+      color: var(--color-oscuro);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid var(--color-acento);
+      display: inline-block;
+    }
+
+    .seccion h3 {
+      font-size: 1.2rem;
+      color: var(--color-medio);
+      margin: 25px 0 12px;
+    }
+
+    .seccion p {
+      margin-bottom: 14px;
+      color: var(--color-texto);
+    }
+
+    /* ===== Listas ===== */
+    .seccion ul, .seccion ol {
+      margin: 12px 0 20px 24px;
+    }
+
+    .seccion li {
+      margin-bottom: 6px;
+    }
+
+    /* ===== Tablas ===== */
+    .tabla-wrapper {
+      overflow-x: auto;
+      margin: 16px 0 24px;
+      border-radius: var(--radio);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    }
+
+    .tabla {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      font-size: 0.9rem;
+    }
+
+    .tabla th {
+      background: var(--color-oscuro);
+      color: #fff;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .tabla td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--color-borde);
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .tabla tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tabla tr:hover td {
+      background: #f0f2f5;
+    }
+
+    .tabla .code-cell {
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.82rem;
+      color: var(--color-medio);
+      background: #f8f9fa;
+    }
+
+    /* ===== Bloques de codigo ===== */
+    .bloque-codigo {
+      background: var(--color-fondo-codigo);
+      color: var(--color-texto-codigo);
+      padding: 18px 22px;
+      border-radius: var(--radio);
+      overflow-x: auto;
+      margin: 14px 0 20px;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-width: 100%;
+    }
+
+    .codigo-inline {
+      background: #eef1f5;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.88em;
+      color: var(--color-oscuro);
+    }
+
+    /* ===== Notas / Info boxes ===== */
+    .nota {
+      background: #eaf4fd;
+      border-left: 4px solid var(--color-acento);
+      padding: 14px 18px;
+      border-radius: 0 var(--radio) var(--radio) 0;
+      margin: 16px 0;
+      font-size: 0.93rem;
+    }
+
+    .nota-exito {
+      background: #e8f8f0;
+      border-left-color: var(--color-exito);
+    }
+
+    .nota-alerta {
+      background: #fdecea;
+      border-left-color: var(--color-alerta);
+    }
+
+    /* ===== Diagrama de capas ===== */
+    .diagrama-capas {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      margin: 30px 0;
+    }
+
+    .capa {
+      background: #fff;
+      border: 2px solid var(--color-borde);
+      border-radius: var(--radio);
+      padding: 14px 30px;
+      text-align: center;
+      width: 300px;
+      max-width: 100%;
+      font-weight: 600;
+      color: var(--color-oscuro);
+    }
+
+    .capa-ui { background: #dfe6e9; border-color: #b2bec3; }
+    .capa-servicio { background: #d5f5e3; border-color: #82e0aa; }
+    .capa-datos { background: #d6eaf8; border-color: #85c1e9; }
+    .capa-modelo { background: #fdebd0; border-color: #f0b27a; }
+    .capa-excepciones { background: #fadbd8; border-color: #f1948a; }
+
+    .flecha {
+      font-size: 1.4rem;
+      color: var(--color-texto-secundario);
+      line-height: 1;
+      padding: 4px 0;
+    }
+
+    /* ===== Codigo de archivo de datos ===== */
+    .archivo-datos {
+      background: #fff;
+      border: 1px solid var(--color-borde);
+      border-radius: var(--radio);
+      margin: 16px 0;
+      overflow: hidden;
+    }
+
+    .archivo-datos-header {
+      background: var(--color-oscuro);
+      color: #fff;
+      padding: 10px 16px;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .archivo-datos-body {
+      padding: 14px 16px;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      background: var(--color-oscuro);
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 24px 20px;
+      font-size: 0.9rem;
+      margin-top: 40px;
+    }
+
+    .footer strong {
+      color: #fff;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      .navbar-inner {
+        flex-wrap: wrap;
+      }
+
+      .navbar-links {
+        display: none;
+      }
+
+      .navbar-links.abierto {
+        display: none;
+      }
+
+      .hamburger {
+        display: none;
+      }
+
+      .fab {
+        display: block;
+      }
+
+      .menu-overlay {
+        display: block;
+      }
+
+      .hero h1 {
+        font-size: 1.8rem;
+      }
+
+      .hero .eslogan {
+        font-size: 1rem;
+      }
+
+      .contenedor {
+        padding: 24px 16px;
+      }
+
+      .seccion h2 {
+        font-size: 1.3rem;
+      }
+
+      .tabla {
+        font-size: 0.8rem;
+      }
+
+      .tabla th, .tabla td {
+        padding: 8px 10px;
+      }
+
+      .tarjetas {
+        grid-template-columns: 1fr;
+      }
+
+      .indice ul {
+        grid-template-columns: 1fr;
+      }
+
+      .diagrama-capas .capa {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero {
+        padding: 40px 16px 35px;
+      }
+
+      .hero .logo-grande {
+        font-size: 3rem;
+      }
+
+      .hero h1 {
+        font-size: 1.5rem;
+      }
+
+      .navbar-brand {
+        font-size: 1.05rem;
+      }
+    }
+
+    /* ===== Estilos de impresion (para PDF) ===== */
+    @media print {
+      .navbar,
+      .fab,
+      .menu-overlay {
+        display: none;
+      }
+
+      body {
+        background: #fff;
+        font-size: 13px;
+      }
+
+      .hero {
+        break-after: page;
+        margin-bottom: 0;
+        border-radius: 0;
+        padding: 40px 20px;
+      }
+
+      .indice {
+        break-after: page;
+        box-shadow: none;
+        margin-bottom: 0;
+      }
+
+      .indice ul {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .separador {
+        border-top: 1px solid var(--color-borde);
+        break-after: avoid;
+      }
+
+      .seccion {
+        break-inside: avoid;
+        margin-bottom: 30px;
+      }
+
+      .tabla-wrapper,
+      .archivo-datos,
+      .bloque-codigo,
+      .nota,
+      .tarjeta {
+        break-inside: avoid;
+      }
+
+      .tabla tr {
+        break-inside: avoid;
+      }
+
+      a {
+        color: var(--color-texto);
+      }
+
+      .contenedor {
+        max-width: 100%;
+        padding: 20px;
+      }
+
+      .footer {
+        margin-top: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="#inicio" class="navbar-brand">
+        <span class="logo-icono">&#x1F5F3;</span> VotaFacil
+      </a>
+      <ul class="navbar-links">
+        <li><a href="#inicio" class="activo">Inicio</a></li>
+        <li><a href="#sec-instalacion">Instalacion</a></li>
+        <li><a href="#sec-arquitectura">Arquitectura</a></li>
+        <li><a href="#sec-modelos">Modelos</a></li>
+        <li><a href="#sec-servicio">Servicio</a></li>
+        <li><a href="#sec-persistencia">Persistencia</a></li>
+        <li><a href="#sec-interfaz">Interfaz</a></li>
+        <li><a href="#sec-excepciones">Excepciones</a></li>
+        <li><a href="#sec-reglas">Reglas</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Boton flotante para moviles -->
+  <button class="fab" id="fabBtn" aria-label="Menu">&#9776;</button>
+
+  <!-- Menu movil a pantalla completa -->
+  <div class="menu-overlay" id="menuOverlay">
+    <div class="menu-overlay-inner">
+      <span class="logo-grande">&#x1F5F3;</span>
+      <h2>VotaFacil</h2>
+      <p class="eslogan">La forma mas sencilla de votar</p>
+      <a href="#inicio">Inicio</a>
+      <a href="#sec-instalacion">Instalacion</a>
+      <a href="#sec-arquitectura">Arquitectura</a>
+      <a href="#sec-modelos">Modelos de Datos</a>
+      <a href="#sec-servicio">Logica de Negocio</a>
+      <a href="#sec-persistencia">Persistencia</a>
+      <a href="#sec-interfaz">Interfaz Grafica</a>
+      <a href="#sec-excepciones">Excepciones</a>
+      <a href="#sec-reglas">Reglas de Negocio</a>
+    </div>
+  </div>
+
+  <!-- Hero / Portada -->
+  <header class="hero" id="inicio">
+    <span class="logo-grande">&#x1F5F3;</span>
+    <h1>VotaFacil</h1>
+    <p class="eslogan">La forma mas sencilla de votar</p>
+    <div class="hero-linea"></div>
+    <p>Documentacion completa del proyecto</p>
+  </header>
+
+  <main class="contenedor">
+
+    <!-- Indice -->
+    <div class="indice">
+      <h2>Contenido</h2>
+      <ul>
+        <li><a href="#sec-general">1. Informacion general</a></li>
+        <li><a href="#sec-instalacion">2. Instalacion</a></li>
+        <li><a href="#sec-arquitectura">3. Arquitectura</a></li>
+        <li><a href="#sec-modelos">4. Modelos de datos</a></li>
+        <li><a href="#sec-servicio">5. Logica de negocio</a></li>
+        <li><a href="#sec-persistencia">6. Persistencia</a></li>
+        <li><a href="#sec-interfaz">7. Interfaz grafica</a></li>
+        <li><a href="#sec-excepciones">8. Excepciones</a></li>
+        <li><a href="#sec-reglas">9. Reglas de negocio</a></li>
+      </ul>
+    </div>
+
+    <!-- Seccion 1: General -->
+    <section class="seccion" id="sec-general">
+      <h2>1. Informacion general</h2>
+
+      <h3>Que es VotaFacil?</h3>
+      <p>
+        <strong>VotaFacil</strong> es una aplicacion de escritorio para realizar votaciones electronicas de forma simple y segura.
+        Permite a un administrador configurar candidatos y electores, abrir y cerrar procesos de votacion, y consultar resultados en tiempo real.
+      </p>
+      <p>
+        Los electores pueden iniciar sesion con su codigo y contrasena, elegir a su candidato preferido y emitir su voto de manera rapida e intuitiva.
+      </p>
+
+      <h3>Caracteristicas principales</h3>
+      <div class="tarjetas">
+        <div class="tarjeta">
+          <h3>Gestion de Candidatos</h3>
+          <p>Crear, modificar, eliminar y consultar candidatos. Cada candidato tiene codigo, nombre, partido y descripcion.</p>
+        </div>
+        <div class="tarjeta">
+          <h3>Gestion de Electores</h3>
+          <p>Administrar electores con cedula, nombre y contrasena. Se pueden habilitar o deshabilitar para el acceso.</p>
+        </div>
+        <div class="tarjeta">
+          <h3>Votacion Segura</h3>
+          <p>Cada elector puede votar una sola vez. El voto es secreto y no se expone la identidad del votante.</p>
+        </div>
+        <div class="tarjeta">
+          <h3>Escrutinio en Tiempo Real</h3>
+          <p>Ver resultados actualizados con conteo de votos, porcentajes y participacion total.</p>
+        </div>
+        <div class="tarjeta">
+          <h3>Busqueda Global</h3>
+          <p>Buscar entre candidatos, electores y votos desde un solo lugar con coincidencia parcial.</p>
+        </div>
+        <div class="tarjeta">
+          <h3>Exportacion CSV</h3>
+          <p>Exportar cualquier dato a archivos CSV para analisis externo o reportes.</p>
+        </div>
+      </div>
+
+      <h3>Tecnologias utilizadas</h3>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Tecnologia</th><th>Version</th><th>Uso</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Java</td><td>21</td><td>Lenguaje de programacion principal</td></tr>
+            <tr><td>JavaFX</td><td>21.0.6</td><td>Framework de interfaz grafica de escritorio</td></tr>
+            <tr><td>Maven</td><td>3.x</td><td>Gestion de dependencias y compilacion</td></tr>
+            <tr><td>Archivos de texto</td><td>--</td><td>Almacenamiento persistente de datos (formato delimitado por punto y coma)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Estructura del proyecto</h3>
+      <div class="bloque-codigo">com.mycompany.votafacil
+  |-- Main.java              (Punto de entrada JVM)
+  |-- App.java               (Aplicacion JavaFX)
+  |-- model/                 (Modelos de datos)
+  |    |-- Candidato.java
+  |    |-- Elector.java
+  |    |-- Voto.java
+  |    |-- ResultadoEscrutinio.java
+  |    `-- ResultadoBusqueda.java
+  |-- data/                  (Capa de persistencia)
+  |    |-- DatosVotacion.java
+  |    `-- CsvExporter.java
+  |-- service/               (Logica de negocio)
+  |    `-- ServicioVotacion.java
+  |-- exception/             (Excepciones personalizadas)
+  |    |-- CandidatoDuplicadoException.java
+  |    |-- ElectorDuplicadoException.java
+  |    |-- ElectorYaVotoException.java
+  |    |-- ExportacionFallidaException.java
+  |    `-- VotacionCerradaException.java
+  `-- ui/                    (Interfaz grafica)
+       |-- Navegacion.java
+       |-- Dialogos.java
+       |-- LoginScene.java
+       |-- MenuAdminScene.java
+       |-- MenuElectorScene.java
+       |-- CandidatosScene.java
+       |-- ElectoresScene.java
+       |-- VotacionScene.java
+       |-- EscrutinioScene.java
+       |-- BusquedaScene.java
+       `-- ExportacionScene.java</div>
+
+      <h3>Credenciales de acceso</h3>
+      <div class="nota">
+        <strong>Administrador:</strong> Usuario <span class="codigo-inline">admin</span> / Contrasena <span class="codigo-inline">admin123</span>
+      </div>
+      <p>
+        Los electores usan el <strong>codigo</strong> que les fue asignado (por ejemplo <span class="codigo-inline">E001</span>) como usuario,
+        y la contrasena que se registro en el sistema.
+      </p>
+    </section>
+
+    <hr class="separador">
+
+    <!-- Seccion 2: Instalacion -->
+    <section class="seccion" id="sec-instalacion">
+      <h2>2. Instalacion</h2>
+
+      <h3>Requisitos previos</h3>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Requisito</th><th>Version minima</th><th>Donde obtenerlo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Java Development Kit (JDK)</td><td>21</td><td><a href="https://adoptium.net/" target="_blank">Adoptium</a> o <a href="https://www.oracle.com/java/technologies/downloads/" target="_blank">Oracle</a></td></tr>
+            <tr><td>Apache Maven</td><td>3.8+</td><td><a href="https://maven.apache.org/download.cgi" target="_blank">maven.apache.org</a></td></tr>
+            <tr><td>IDE (opcional)</td><td>Cualquiera</td><td>NetBeans, IntelliJ IDEA, VS Code</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Paso 1: Clonar el repositorio</h3>
+      <p>Abre una terminal y ejecuta el siguiente comando para descargar el codigo fuente:</p>
+      <div class="bloque-codigo">git clone https://github.com/tu-usuario/VotaFacil-NetBeans.git
+cd VotaFacil-NetBeans</div>
+
+      <h3>Paso 2: Verificar la instalacion de Java</h3>
+      <p>Asegurate de que Java 21 este instalado correctamente:</p>
+      <div class="bloque-codigo">java -version
+javac -version</div>
+      <p>Debe mostrar algo como <span class="codigo-inline">java version "21.x.x"</span>. Si no lo muestra, necesitas instalar el JDK.</p>
+
+      <h3>Paso 3: Verificar la instalacion de Maven</h3>
+      <p>Verifica que Maven este disponible:</p>
+      <div class="bloque-codigo">mvn -version</div>
+      <p>Si el comando no es reconocido, agrega la carpeta <span class="codigo-inline">bin</span> de Maven a la variable de entorno <span class="codigo-inline">PATH</span>.</p>
+
+      <h3>Paso 4: Compilar el proyecto</h3>
+      <p>Maven descargara las dependencias automaticamente la primera vez que ejecutes este comando:</p>
+      <div class="bloque-codigo">mvn compile</div>
+      <p>Si todo sale bien, veras un mensaje de <span class="codigo-inline">BUILD SUCCESS</span>.</p>
+
+      <h3>Paso 5: Ejecutar la aplicacion</h3>
+      <p>Para iniciar VotaFacil, ejecuta:</p>
+      <div class="bloque-codigo">mvn javafx:run</div>
+      <p>Se abrira la ventana de la aplicacion con la pantalla de inicio de sesion.</p>
+
+      <div class="nota">
+        <strong>Alternativa con NetBeans:</strong> Haz clic derecho en el proyecto y selecciona "Run" o presiona F6.
+      </div>
+
+      <h3>Estructura de archivos de datos</h3>
+      <p>
+        Al ejecutar la aplicacion, se crea automaticamente una carpeta <span class="codigo-inline">datos/</span> en la raiz del proyecto con los siguientes archivos:
+      </p>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Archivo</th><th>Contenido</th><th>Formato</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="code-cell">candidatos.txt</td><td>Lista de candidatos registrados</td><td class="code-cell">codigo;nombre;partido;descripcion</td></tr>
+            <tr><td class="code-cell">electores.txt</td><td>Lista de electores registrados</td><td class="code-cell">codigo;cedula;nombre;contrasena;yaVoto</td></tr>
+            <tr><td class="code-cell">votos.txt</td><td>Votos emitidos durante la votacion</td><td class="code-cell">codigoVoto;codigoElector;codigoCandidato</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="nota-exito nota">
+        Los datos se guardan automaticamente al cerrar la aplicacion, al cerrar sesion y despues de cada voto emitido.
+      </div>
+
+      <h3>Comandos utiles de Maven</h3>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Comando</th><th>Que hace</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="code-cell">mvn compile</td><td>Compila el codigo fuente</td></tr>
+            <tr><td class="code-cell">mvn javafx:run</td><td>Ejecuta la aplicacion JavaFX</td></tr>
+            <tr><td class="code-cell">mvn clean</td><td>Elimina archivos compilados</td></tr>
+            <tr><td class="code-cell">mvn clean compile</td><td>Limpia y recompila todo</td></tr>
+            <tr><td class="code-cell">mvn package</td><td>Genera un archivo JAR ejecutable</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="separador">
+
+    <!-- Seccion 3: Arquitectura -->
+    <section class="seccion" id="sec-arquitectura">
+      <h2>3. Arquitectura</h2>
+
+      <h3>Arquitectura por capas</h3>
+      <p>
+        VotaFacil esta organizado en <strong>5 capas</strong> separadas por responsabilidad. Cada capa solo se comunica con la capa que tiene justo debajo, lo que hace el codigo mas facil de entender y mantener.
+      </p>
+
+      <div class="diagrama-capas">
+        <div class="capa capa-ui">Interfaz Grafica (ui/)</div>
+        <div class="flecha">&#8595;</div>
+        <div class="capa capa-servicio">Logica de Negocio (service/)</div>
+        <div class="flecha">&#8595;</div>
+        <div class="capa capa-datos">Capa de Persistencia (data/)</div>
+        <div class="flecha">&#8595;</div>
+        <div class="capa capa-modelo">Modelos de Datos (model/)</div>
+        <div class="flecha">&#8595;</div>
+        <div class="capa capa-excepciones">Excepciones (exception/)</div>
+      </div>
+
+      <h3>Que hace cada capa?</h3>
+
+      <h4>Interfaz Grafica (ui/)</h4>
+      <p>
+        Contiene todas las pantallas que ve el usuario. Cada pantalla es una clase JavaFX que construye la interfaz de forma programatica (sin archivos FXML). Las clases principales son:
+      </p>
+      <ul>
+        <li><strong>LoginScene</strong> &mdash; Pantalla de inicio de sesion</li>
+        <li><strong>MenuAdminScene</strong> &mdash; Panel principal del administrador con navegacion lateral</li>
+        <li><strong>MenuElectorScene</strong> &mdash; Pantalla del elector con acceso a votar</li>
+        <li><strong>CandidatosScene</strong> &mdash; CRUD de candidatos</li>
+        <li><strong>ElectoresScene</strong> &mdash; CRUD de electores</li>
+        <li><strong>VotacionScene</strong> &mdash; Pantalla donde el elector elige su candidato</li>
+        <li><strong>EscrutinioScene</strong> &mdash; Resultados de la votacion</li>
+        <li><strong>BusquedaScene</strong> &mdash; Busqueda global entre todas las entidades</li>
+        <li><strong>ExportacionScene</strong> &mdash; Exportacion de datos a CSV</li>
+      </ul>
+      <p>Tambien incluye <strong>Navegacion</strong> (cambia entre pantallas) y <strong>Dialogos</strong> (muestra alertas).</p>
+
+      <h4>Logica de Negocio (service/)</h4>
+      <p>
+        <strong>ServicioVotacion</strong> es la clase central. Maneja toda la logica: autenticacion, creacion y edicion de candidatos y electores, apertura/cierre de votacion, emision de votos, conteo de resultados, busqueda y preparacion de datos para exportar.
+      </p>
+
+      <h4>Capa de Persistencia (data/)</h4>
+      <p>
+        Se encarga de guardar y cargar los datos en archivos de texto plano. <strong>DatosVotacion</strong> maneja los archivos de candidatos, electores y votos. <strong>CsvExporter</strong> genera archivos CSV con formato correcto.
+      </p>
+
+      <h4>Modelos de Datos (model/)</h4>
+      <p>
+        Son las clases que representan la informacion: <strong>Candidato</strong>, <strong>Elector</strong>, <strong>Voto</strong>, <strong>ResultadoEscrutinio</strong> y <strong>ResultadoBusqueda</strong>. Son objetos simples con campos y metodos basicos.
+      </p>
+
+      <h4>Excepciones (exception/)</h4>
+      <p>
+        Contiene 5 excepciones personalizadas que se lanzan cuando algo sale mal: candidato duplicado, elector duplicado, elector ya voto, votacion cerrada y exportacion fallida.
+      </p>
+
+      <h3>Flujo de ejecucion</h3>
+      <p>Asi se ejecuta el programa paso a paso:</p>
+      <ol>
+        <li><strong>Main.java</strong> inicia la JVM y llama a <span class="codigo-inline">Application.launch()</span></li>
+        <li><strong>App.java</strong> configura la ventana, carga los datos desde archivos y muestra el login</li>
+        <li><strong>LoginScene</strong> pide usuario y contrasena al usuario</li>
+        <li><strong>ServicioVotacion.iniciarSesion()</strong> valida las credenciales</li>
+        <li>Si es admin, se muestra <strong>MenuAdminScene</strong>. Si es elector, <strong>MenuElectorScene</strong></li>
+        <li>El usuario navega por las pantallas usando los botones</li>
+        <li>Al cerrar sesion o cerrar la ventana, <strong>DatosVotacion.guardar()</strong> persiste todo en archivos</li>
+      </ol>
+
+      <h3>Diagrama de dependencias</h3>
+      <p>Este diagrama muestra que clases dependen de cuales:</p>
+      <div class="bloque-codigo">Main
+  `-- App
+        |-- Navegacion
+        |-- DatosVotacion
+        `-- LoginScene
+              |-- ServicioVotacion
+              |-- MenuAdminScene
+              |-- MenuElectorScene
+              `-- Dialogos
+
+MenuAdminScene
+  |-- ServicioVotacion
+  |-- DatosVotacion
+  |-- CandidatosScene
+  |-- ElectoresScene
+  |-- EscrutinioScene
+  |-- BusquedaScene
+  `-- ExportacionScene
+
+ServicioVotacion
+  |-- DatosVotacion (listas de datos)
+  |-- Candidato, Elector, Voto (modelos)
+  `-- Excepciones (5 tipos)
+
+CsvExporter
+  `-- ExportacionFallidaException
+
+DatosVotacion
+  |-- Candidato, Elector, Voto
+  `-- Archivos .txt</div>
+
+      <h3>Patrones de disenio utilizados</h3>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Patron</th><th>Donde se usa</th><th>Descripcion</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Clases estaticas</td><td>Todas las clases de servicio, datos y utilidades</td><td>Todos los metodos son estaticos, no se crean instancias</td></tr>
+            <tr><td>DTO (Data Transfer Object)</td><td>ResultadoEscrutinio, ResultadoBusqueda</td><td>Objetos solo para mostrar datos en la interfaz</td></tr>
+            <tr><td>Capas (Layered)</td><td>Toda la arquitectura</td><td>Separacion clara entre UI, logica, datos y modelos</td></tr>
+            <tr><td>Navegador centralizado</td><td>Navegacion.java</td><td>Clase unica que controla los cambios de pantalla</td></tr>
+            <tr><td>Dialogos centralizados</td><td>Dialogos.java</td><td>Clase unica para todos los mensajes emergentes</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="separador">
+
+    <!-- Seccion 4: Modelos -->
+    <section class="seccion" id="sec-modelos">
+      <h2>4. Modelos de datos</h2>
+      <p>
+        Los modelos son clases Java que representan la informacion que maneja el sistema. Cada modelo tiene campos que guardan los datos y metodos para acceder a ellos. Estan en el paquete <span class="codigo-inline">model/</span>.
+      </p>
+
+      <h3>Candidato</h3>
+      <p>Representa a un candidato electoral. Tiene un codigo unico y un nombre unico que no se pueden repetir.</p>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Campo</th><th>Tipo</th><th>Descripcion</th><th>Ejemplo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="code-cell">codigo</td><td>String</td><td>Identificador unico del candidato</td><td class="code-cell">CAN001</td></tr>
+            <tr><td class="code-cell">nombre</td><td>String</td><td>Nombre completo (unico)</td><td>Juan Perez</td></tr>
+            <tr><td class="code-cell">partido</td><td>String</td><td>Nombre del partido politico</td><td>Partido Progreso</td></tr>
+            <tr><td class="code-cell">descripcion</td><td>String</td><td>Descripcion del plan o propuesta</td><td>Educacion gratuita...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="nota">
+        <strong>Archivo:</strong> Se guarda en <span class="codigo-inline">datos/candidatos.txt</span> con el formato: <span class="codigo-inline">codigo;nombre;partido;descripcion</span>
+      </div>
+
+      <h3>Elector</h3>
+      <p>Representa a un votante. Tiene contrasena para iniciar sesion y un indicador de si ya voto o no.</p>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Campo</th><th>Tipo</th><th>Descripcion</th><th>Ejemplo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="code-cell">codigo</td><td>String</td><td>Identificador unico del elector</td><td class="code-cell">E001</td></tr>
+            <tr><td class="code-cell">cedula</td><td>String</td><td>Cedula de identidad (unica)</td><td class="code-cell">12345678</td></tr>
+            <tr><td class="code-cell">nombre</td><td>String</td><td>Nombre completo</td><td>Ana Lopez</td></tr>
+            <tr><td class="code-cell">contrasena</td><td>String</td><td>Contrasena de acceso (texto plano)</td><td class="code-cell">clave123</td></tr>
+            <tr><td class="code-cell">yaVoto</td><td>boolean</td><td>Si ya emitio su voto</td><td>false</td></tr>
+            <tr><td class="code-cell">habilitado</td><td>boolean</td><td>Si puede iniciar sesion (solo en memoria)</td><td>true</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="nota">
+        <strong>Nota:</strong> El campo <span class="codigo-inline">habilitado</span> no se guarda en archivos. Siempre se carga como <span class="codigo-inline">true</span> desde el archivo.
+      </div>
+      <p>Metodos de utilidad:</p>
+      <ul>
+        <li><span class="codigo-inline">getEstado()</span> &mdash; Devuelve "Ya voto" o "Pendiente"</li>
+        <li><span class="codigo-inline">getHabilitadoTexto()</span> &mdash; Devuelve "Si" o "No"</li>
+        <li><span class="codigo-inline">getContrasenaOculta()</span> &mdash; Devuelve asteriscos (****) para ocultar la contrasena en la tabla</li>
+      </ul>
+
+      <h3>Voto</h3>
+      <p>Representa un voto emitido. Conecta al elector con el candidato elegido, pero la identidad del votante nunca se muestra.</p>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Campo</th><th>Tipo</th><th>Descripcion</th><th>Ejemplo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="code-cell">codigoVoto</td><td>String</td><td>Identificador unico del voto</td><td class="code-cell">V001</td></tr>
+            <tr><td class="code-cell">codigoElector</td><td>String</td><td>Codigo del elector que voto (secreto)</td><td class="code-cell">E001</td></tr>
+            <tr><td class="code-cell">codigoCandidato</td><td>String</td><td>Codigo del candidato elegido</td><td class="code-cell">CAN001</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="nota-alerta nota">
+        <strong>Secreto del voto:</strong> El campo <span class="codigo-inline">codigoElector</span> nunca se muestra en ninguna pantalla ni en los archivos CSV exportados.
+      </div>
+
+      <h3>ResultadoEscrutinio</h3>
+      <p>
+        Es un objeto de tipo <strong>DTO</strong> (objeto de transferencia de datos) usado solo para mostrar resultados en la tabla de escrutinio. Es inmutable (no tiene metodos para cambiar sus valores).
+      </p>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Campo</th><th>Tipo</th><th>Descripcion</th><th>Ejemplo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="code-cell">codigo</td><td>String</td><td>Codigo del candidato</td><td class="code-cell">CAN001</td></tr>
+            <tr><td class="code-cell">nombre</td><td>String</td><td>Nombre del candidato</td><td>Juan Perez</td></tr>
+            <tr><td class="code-cell">partido</td><td>String</td><td>Partido politico</td><td>Partido Progreso</td></tr>
+            <tr><td class="code-cell">votos</td><td>String</td><td>Cantidad de votos recibidos</td><td>15</td></tr>
+            <tr><td class="code-cell">porcentaje</td><td>String</td><td>Porcentaje de votos</td><td>37.5%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>ResultadoBusqueda</h3>
+      <p>
+        Tambien es un DTO. Se usa para mostrar los resultados de la busqueda global en una tabla con el tipo de entidad y sus datos formateados.
+      </p>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Campo</th><th>Tipo</th><th>Descripcion</th><th>Ejemplo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="code-cell">tipo</td><td>String</td><td>Tipo de entidad encontrada</td><td>Candidato</td></tr>
+            <tr><td class="code-cell">datos</td><td>String</td><td>Datos formateados de la entidad</td><td>CAN001 | Juan Perez | Partido Progreso</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Resumen de relaciones</h3>
+      <div class="diagrama-capas">
+        <div class="capa capa-modelo">Candidato &mdash; Tiene codigo, nombre, partido, descripcion</div>
+        <div class="flecha">&#8593;&#8593; relacionado por codigo</div>
+        <div class="capa capa-modelo">Voto &mdash; Conecta codigoElector con codigoCandidato</div>
+        <div class="flecha">&#8593;&#8593; relacionado por codigo</div>
+        <div class="capa capa-modelo">Elector &mdash; Tiene codigo, cedula, nombre, contrasena</div>
+      </div>
+    </section>
+
+    <hr class="separador">
+
+    <!-- Seccion 5: Servicio -->
+    <section class="seccion" id="sec-servicio">
+      <h2>5. Logica de negocio (ServicioVotacion)</h2>
+      <p>
+        <strong>ServicioVotacion</strong> es la clase mas importante del proyecto. Contiene toda la logica de negocio de la aplicacion. Todos sus metodos son estaticos (no se crea una instancia de la clase).
+      </p>
+      <p>Esta clase se divide en varias categorias de funciones que se explican a continuacion.</p>
+
+      <h3>Autenticacion</h3>
+      <p>Estos metodos manejan el inicio y cierre de sesion de los usuarios.</p>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Metodo</th><th>Que hace</th><th>Que devuelve</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-cell">iniciarSesion(usuario, contrasena)</td>
+              <td>Valida las credenciales del usuario</td>
+              <td>"admin", "elector" o mensaje de error</td>
+            </tr>
+            <tr>
+              <td class="code-cell">cerrarSesion()</td>
+              <td>Limpia la sesion del elector actual</td>
+              <td>Nada (void)</td>
+            </tr>
+            <tr>
+              <td class="code-cell">getElectorActual()</td>
+              <td>Obtiene el elector que esta logueado</td>
+              <td>Objeto Elector o null</td>
+            </tr>
+            <tr>
+              <td class="code-cell">getElectorActualNombre()</td>
+              <td>Obtiene el nombre del elector logueado</td>
+              <td>String con el nombre</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Como funciona iniciarSesion():</strong></p>
+      <ol>
+        <li>Si el usuario es "admin" y la contrasena es "admin123", devuelve "admin"</li>
+        <li>Si no, busca un elector con ese codigo</li>
+        <li>Si lo encuentra, verifica la contrasena</li>
+        <li>Si la contrasena es correcta, verifica que este habilitado</li>
+        <li>Si no ha votado, verifica que la votacion este abierta</li>
+        <li>Si todo esta bien, guarda el codigo del elector actual y devuelve "elector"</li>
+      </ol>
+
+      <h3>Gestion de Candidatos</h3>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Metodo</th><th>Que hace</th><th>Lanza excepcion</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-cell">registrarCandidato(codigo, nombre, partido, descripcion)</td>
+              <td>Crea un candidato nuevo</td>
+              <td>CandidatoDuplicadoException</td>
+            </tr>
+            <tr>
+              <td class="code-cell">modificarCandidato(codigo, nombre, partido, descripcion)</td>
+              <td>Modifica un candidato existente</td>
+              <td>CandidatoDuplicadoException</td>
+            </tr>
+            <tr>
+              <td class="code-cell">eliminarCandidato(codigo)</td>
+              <td>Elimina un candidato</td>
+              <td>Ninguna</td>
+            </tr>
+            <tr>
+              <td class="code-cell">buscarCandidatoPorCodigo(codigo)</td>
+              <td>Busca un candidato por su codigo</td>
+              <td>Ninguna</td>
+            </tr>
+            <tr>
+              <td class="code-cell">getCandidatos()</td>
+              <td>Devuelve la lista completa de candidatos</td>
+              <td>Ninguna</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="nota">
+        <strong>Restriccion:</strong> No se pueden agregar, modificar o eliminar candidatos mientras la votacion esta abierta.
+      </div>
+
+      <h3>Gestion de Electores</h3>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Metodo</th><th>Que hace</th><th>Lanza excepcion</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-cell">registrarElector(codigo, cedula, nombre, contrasena)</td>
+              <td>Crea un elector nuevo</td>
+              <td>ElectorDuplicadoException</td>
+            </tr>
+            <tr>
+              <td class="code-cell">modificarElector(codigo, cedula, nombre, contrasena)</td>
+              <td>Modifica un elector existente</td>
+              <td>ElectorDuplicadoException</td>
+            </tr>
+            <tr>
+              <td class="code-cell">eliminarElector(codigo)</td>
+              <td>Elimina un elector</td>
+              <td>Ninguna</td>
+            </tr>
+            <tr>
+              <td class="code-cell">habilitarElector(codigo)</td>
+              <td>Permite al elector iniciar sesion</td>
+              <td>Ninguna</td>
+            </tr>
+            <tr>
+              <td class="code-cell">deshabilitarElector(codigo)</td>
+              <td>Impide al elector iniciar sesion</td>
+              <td>Ninguna</td>
+            </tr>
+            <tr>
+              <td class="code-cell">getElectores()</td>
+              <td>Devuelve la lista completa de electores</td>
+              <td>Ninguna</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Control de Votacion</h3>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Metodo</th><th>Que hace</th><th>Condiciones</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-cell">abrirVotacion()</td>
+              <td>Abre el periodo de votacion</td>
+              <td>Requiere minimo 2 candidatos y 1 elector</td>
+            </tr>
+            <tr>
+              <td class="code-cell">cerrarVotacion()</td>
+              <td>Cierra el periodo de votacion</td>
+              <td>Siempre funciona</td>
+            </tr>
+            <tr>
+              <td class="code-cell">isVotacionAbierta()</td>
+              <td>Consultar si la votacion esta abierta</td>
+              <td>Devuelve true o false</td>
+            </tr>
+            <tr>
+              <td class="code-cell">votar(codigoCandidato)</td>
+              <td>El elector emite su voto</td>
+              <td>La votacion debe estar abierta</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Que pasa cuando un elector vota:</strong></p>
+      <ol>
+        <li>Se verifica que la votacion este abierta</li>
+        <li>Se marca al elector como "ya voto" (<span class="codigo-inline">yaVoto = true</span>)</li>
+        <li>Se crea un objeto Voto y se agrega a la lista</li>
+        <li>Se cierra la sesion del elector automaticamente</li>
+      </ol>
+
+      <h3>Escrutinio y Estadisticas</h3>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Metodo</th><th>Que calcula</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-cell">contarVotos(codigoCandidato)</td>
+              <td>Cuantos votos recibio un candidato especifico</td>
+            </tr>
+            <tr>
+              <td class="code-cell">candidatosPorVotosDesc()</td>
+              <td>Lista de candidatos ordenada de mayor a menor cantidad de votos</td>
+            </tr>
+            <tr>
+              <td class="code-cell">totalVotosEmitidos()</td>
+              <td>Total de votos que se han emitido</td>
+            </tr>
+            <tr>
+              <td class="code-cell">totalElectoresHabilitados()</td>
+              <td>Cantidad de electores que pueden votar</td>
+            </tr>
+            <tr>
+              <td class="code-cell">porcentajeVotos(votosCandidato)</td>
+              <td>Que porcentaje representa un candidato del total</td>
+            </tr>
+            <tr>
+              <td class="code-cell">porcentajeParticipacion()</td>
+              <td>Que porcentaje de electores ya voto</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Formula de participacion:</strong></p>
+      <div class="bloque-codigo">Participacion = (Total de votos emitidos / Total de electores habilitados) x 100</div>
+
+      <h3>Busqueda Global</h3>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Metodo</th><th>Que hace</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-cell">buscarGlobal(termino)</td>
+              <td>Busca el termino en candidatos (codigo, nombre, partido, descripcion), electores (codigo, cedula, nombre) y votos (codigo de voto)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>La busqueda es <strong>parcial</strong> y <strong>no distingue mayusculas/minusculas</strong>. Por ejemplo, buscar "juan" encontrara al candidato "Juan Perez".</p>
+
+      <h3>Preparacion para Exportacion</h3>
+      <p>Estos metodos preparan los datos en formato de arreglos de strings para que <span class="codigo-inline">CsvExporter</span> los escriba en archivos CSV:</p>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Metodo</th><th>Que prepara</th><th>Columnas</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-cell">filasCandidatosCSV()</td>
+              <td>Datos de candidatos</td>
+              <td>Codigo, Nombre, Partido, Descripcion</td>
+            </tr>
+            <tr>
+              <td class="code-cell">filasElectoresCSV()</td>
+              <td>Datos de electores</td>
+              <td>Codigo, Cedula, Nombre, Estado</td>
+            </tr>
+            <tr>
+              <td class="code-cell">filasEscrutinioCSV()</td>
+              <td>Resultados del escrutinio</td>
+              <td>Codigo, Nombre, Partido, Votos, Porcentaje</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="separador">
+
+    <!-- Seccion 6: Persistencia -->
+    <section class="seccion" id="sec-persistencia">
+      <h2>6. Persistencia</h2>
+
+      <h3>Como se guardan los datos?</h3>
+      <p>
+        VotaFacil no usa base de datos. Los datos se guardan en <strong>archivos de texto plano</strong> dentro de una carpeta llamada <span class="codigo-inline">datos/</span>. Cada linea del archivo representa un registro, y los campos se separan con <strong>punto y coma (;)</strong>.
+      </p>
+
+      <h3>DatosVotacion</h3>
+      <p>
+        Esta es la clase principal de persistencia. Mantiene tres listas en memoria y las lee/escribe desde archivos.
+      </p>
+
+      <h4>Listas en memoria</h4>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Lista</th><th>Tipo</th><th>Archivo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="code-cell">candidatos</td><td>List&lt;Candidato&gt;</td><td class="code-cell">datos/candidatos.txt</td></tr>
+            <tr><td class="code-cell">electores</td><td>List&lt;Elector&gt;</td><td class="code-cell">datos/electores.txt</td></tr>
+            <tr><td class="code-cell">votos</td><td>List&lt;Voto&gt;</td><td class="code-cell">datos/votos.txt</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Metodos principales</h4>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Metodo</th><th>Que hace</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-cell">cargar()</td>
+              <td>Crea la carpeta datos/ si no existe, luego lee los tres archivos y llena las listas en memoria</td>
+            </tr>
+            <tr>
+              <td class="code-cell">guardar()</td>
+              <td>Escribe el contenido de las tres listas en sus archivos correspondientes</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="nota">
+        <strong>Cuando se guardan los datos automaticamente:</strong>
+        <ul style="margin-top: 8px; margin-left: 20px;">
+          <li>Cuando se cierra la aplicacion (clic en la X de la ventana)</li>
+          <li>Cuando el administrador cierra sesion</li>
+          <li>Cuando un elector emite su voto</li>
+        </ul>
+      </div>
+
+      <h3>Formato de los archivos</h3>
+
+      <h4>candidatos.txt</h4>
+      <p>Cada linea contiene un candidato con sus 4 campos separados por punto y coma:</p>
+      <div class="archivo-datos">
+        <div class="archivo-datos-header">&#128196; datos/candidatos.txt</div>
+        <div class="archivo-datos-body">CAN001;Juan Perez;Partido Progreso;Educacion gratuita, salud y vivienda para todos
+CAN002;Maria Gonzalez;Partido Union;Seguridad ciudadana y empleo para la juventud
+CAN003;Carlos Rodriguez;Partido Democrata;Transparencia y lucha contra la corrupcion
+CAN004;Ana Martinez;Partido Fuerza;Apoyo a pequenos emprendedores y al comercio local</div>
+      </div>
+
+      <h4>electores.txt</h4>
+      <p>Cada linea contiene un elector con 5 campos. El ultimo campo indica si ya voto (true/false):</p>
+      <div class="archivo-datos">
+        <div class="archivo-datos-header">&#128196; datos/electores.txt</div>
+        <div class="archivo-datos-body">E001;12345678;Ana Lopez;clave123;false
+E002;23456789;Luisa Perez;clave456;false
+E003;34567890;Carlos Gomez;clave789;false
+E004;45678901;Marta Ruiz;claveabc;false
+E005;56789012;Jorge Diaz;clavedef;false</div>
+      </div>
+
+      <h4>votos.txt</h4>
+      <p>Cada linea contiene un voto con 3 campos: codigo del voto, codigo del elector y codigo del candidato:</p>
+      <div class="archivo-datos">
+        <div class="archivo-datos-header">&#128196; datos/votos.txt</div>
+        <div class="archivo-datos-body">(vacio - aun no se han emitido votos)</div>
+      </div>
+
+      <h3>Como se lee y escribe un archivo</h3>
+      <p>El proceso de lectura y escritura usa clases de Java estandar (<span class="codigo-inline">BufferedReader</span> y <span class="codigo-inline">BufferedWriter</span>).</p>
+
+      <h4>Leer un archivo</h4>
+      <ol>
+        <li>Se abre el archivo con <span class="codigo-inline">BufferedReader</span></li>
+        <li>Se lee linea por linea hasta llegar al final</li>
+        <li>Cada linea se divide con <span class="codigo-inline">split(";")</span></li>
+        <li>Se crea un objeto (Candidato, Elector o Voto) con los campos obtenidos</li>
+        <li>El objeto se agrega a la lista correspondiente</li>
+      </ol>
+
+      <h4>Escribir un archivo</h4>
+      <ol>
+        <li>Se abre el archivo con <span class="codigo-inline">BufferedWriter</span></li>
+        <li>Se recorre la lista de objetos</li>
+        <li>Cada objeto se convierte a una linea con los campos separados por punto y coma</li>
+        <li>Se escribe cada linea en el archivo</li>
+      </ol>
+
+      <h3>CsvExporter</h3>
+      <p>
+        Esta clase se encarga de exportar datos a archivos <strong>CSV</strong> (Comma-Separated Values). Los archivos CSV se pueden abrir en Excel, Google Sheets u otras herramientas de analisis.
+      </p>
+
+      <h4>Metodos</h4>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Metodo</th><th>Que hace</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-cell">exportar(archivo, cabeceras, filas)</td>
+              <td>Escribe un archivo CSV con cabeceras y datos</td>
+            </tr>
+            <tr>
+              <td class="code-cell">campoCSV(valor)</td>
+              <td>Escapa un campo: si contiene comas, comillas o saltos de linea, lo encierra entre comillas dobles</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Cabeceras predefinidas</h4>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Constante</th><th>Columnas</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-cell">CABECERAS_CANDIDATOS</td>
+              <td>Codigo, Nombre, Partido, Descripcion</td>
+            </tr>
+            <tr>
+              <td class="code-cell">CABECERAS_ELECTORES</td>
+              <td>Codigo, Cedula, Nombre, Estado</td>
+            </tr>
+            <tr>
+              <td class="code-cell">CABECERAS_ESCRUTINIO</td>
+              <td>Codigo, Nombre, Partido, Votos, Porcentaje</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="nota">
+        <strong>Nota importante:</strong> La exportacion de electores muestra el "Estado" (Pendiente/Ya voto) pero <strong>no incluye la contrasena</strong> por seguridad. Tampoco se exporta la identidad del elector que voto en los resultados del escrutinio.
+      </div>
+
+      <h3>Manejo de errores</h3>
+      <p>
+        Si ocurre un error al leer o escribir archivos de datos (por ejemplo, permisos de escritura, disco lleno), el error se imprime en la consola pero no se detiene la aplicacion.
+      </p>
+      <p>
+        Si ocurre un error al exportar a CSV, se lanza una <span class="codigo-inline">ExportacionFallidaException</span> y se muestra un dialogo de error al usuario.
+      </p>
+    </section>
+
+    <hr class="separador">
+
+    <!-- Seccion 7: Interfaz -->
+    <section class="seccion" id="sec-interfaz">
+      <h2>7. Interfaz grafica</h2>
+      <p>
+        La interfaz grafica esta construida con <strong>JavaFX</strong>. Cada pantalla es una clase Java que construye su layout de forma programatica (sin archivos FXML). Las pantallas se conectan entre si mediante botones que cambian la escena mostrada.
+      </p>
+
+      <h3>Pantalla de Inicio de Sesion</h3>
+      <p><strong>Clase:</strong> <span class="codigo-inline">LoginScene.java</span> &nbsp;|&nbsp; <strong>Tamanio:</strong> 460 x 420 px</p>
+      <p>Es la primera pantalla que se muestra al abrir la aplicacion.</p>
+      <div class="tarjetas">
+        <div class="tarjeta">
+          <h3>Elementos visuales</h3>
+          <ul>
+            <li>Logo (emoji) y nombre "VotaFacil"</li>
+            <li>Eslogan "La forma mas sencilla de votar"</li>
+            <li>Linea decorativa separadora</li>
+            <li>Campo "Usuario" (TextField)</li>
+            <li>Campo "Contrasena" (PasswordField)</li>
+            <li>Boton "Iniciar Sesion" con efecto hover</li>
+          </ul>
+        </div>
+        <div class="tarjeta">
+          <h3>Comportamiento</h3>
+          <ul>
+            <li>Si las credenciales son de admin, va al MenuAdminScene</li>
+            <li>Si son de elector, va al MenuElectorScene</li>
+            <li>Si hay error, muestra un dialogo de error</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Panel del Administrador</h3>
+      <p><strong>Clase:</strong> <span class="codigo-inline">MenuAdminScene.java</span> &nbsp;|&nbsp; <strong>Tamanio:</strong> 1000 x 600 px</p>
+      <p>
+        Usa un layout <strong>BorderPane</strong> con una barra de navegacion oscura a la izquierda y un area de contenido a la derecha.
+      </p>
+
+      <h4>Navegacion lateral (sidebar)</h4>
+      <p>Contiene 7 botones con fondo oscuro (#2c3e50) y texto blanco. Al pasar el mouse cambian a un tono mas claro (#34495e):</p>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Boton</th><th>Que abre en el panel derecho</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Gestionar Candidatos</td><td>Tabla de candidatos con CRUD</td></tr>
+            <tr><td>Gestionar Electores</td><td>Tabla de electores con CRUD</td></tr>
+            <tr><td>Abrir Votacion / Cerrar Votacion</td><td>Toggle (no cambia el panel)</td></tr>
+            <tr><td>Ver Escrutinio</td><td>Tabla de resultados</td></tr>
+            <tr><td>Busqueda Global</td><td>Barra de busqueda + tabla de resultados</td></tr>
+            <tr><td>Exportar Datos</td><td>Selector de tipo + boton de exportar</td></tr>
+            <tr><td>Cerrar Sesion</td><td>Guarda datos y vuelve al login</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Panel derecho</h4>
+      <p>
+        Cuando no se ha seleccionado ninguna opcion, muestra una <strong>pantalla de bienvenida</strong> con el logo de VotaFacil, el nombre, una linea decorativa y el eslogan. Al hacer clic en un boton de navegacion, el contenido del panel derecho cambia dinamicamente.
+      </p>
+
+      <h3>Pantalla del Elector</h3>
+      <p><strong>Clase:</strong> <span class="codigo-inline">MenuElectorScene.java</span> &nbsp;|&nbsp; <strong>Tamanio:</strong> 420 x 240 px</p>
+      <p>Pantalla simple que muestra:</p>
+      <ul>
+        <li>Un saludo: "Bienvenido(a), [nombre del elector]"</li>
+        <li>Boton "Ir a Votacion" &mdash; lleva a la pantalla de votacion</li>
+        <li>Boton "Cerrar Sesion" &mdash; guarda datos y vuelve al login</li>
+      </ul>
+
+      <h3>Gestion de Candidatos</h3>
+      <p><strong>Clase:</strong> <span class="codigo-inline">CandidatosScene.java</span> &nbsp;|&nbsp; <strong>Tamanio:</strong> 950 x 560 px</p>
+      <p>Pantalla de administracion completa con:</p>
+      <ul>
+        <li><strong>Tabla</strong> con columnas: Codigo, Nombre, Partido, Descripcion</li>
+        <li><strong>Campos de texto</strong> para ingresar/modificar datos</li>
+        <li><strong>Botones:</strong> Agregar, Cargar seleccionado, Modificar, Eliminar, Exportar CSV, Volver al menu</li>
+      </ul>
+      <div class="nota">
+        <strong>Detalle:</strong> Los botones Agregar, Modificar y Eliminar se deshabilitan automaticamente cuando la votacion esta abierta.
+      </div>
+
+      <h3>Gestion de Electores</h3>
+      <p><strong>Clase:</strong> <span class="codigo-inline">ElectoresScene.java</span> &nbsp;|&nbsp; <strong>Tamanio:</strong> 950 x 560 px</p>
+      <ul>
+        <li><strong>Tabla</strong> con columnas: Codigo, Cedula, Nombre, Contrasena (enmascarada), Estado, Habilitado</li>
+        <li><strong>Campos:</strong> Codigo, Cedula, Nombre, Contrasena (PasswordField)</li>
+        <li><strong>Botones:</strong> Agregar, Cargar seleccionado, Modificar, Eliminar, Habilitar, Deshabilitar, Exportar CSV, Volver al menu</li>
+      </ul>
+      <div class="nota">
+        <strong>Detalle:</strong> La contrasena se muestra como asteriscos (***) en la tabla para protegerla.
+      </div>
+
+      <h3>Pantalla de Votacion</h3>
+      <p><strong>Clase:</strong> <span class="codigo-inline">VotacionScene.java</span> &nbsp;|&nbsp; <strong>Tamanio:</strong> 750 x 520 px</p>
+      <p>Donde el elector elige su candidato:</p>
+      <ul>
+        <li><strong>Tabla</strong> con columnas: Nombre, Partido, Descripcion (sin codigo por seguridad)</li>
+        <li>El boton "Votar" esta deshabilitado hasta que se seleccione un candidato</li>
+        <li>Al votar, se muestra un dialogo de confirmacion</li>
+        <li>Despues de votar, se guarda todo y se vuelve al login automaticamente</li>
+      </ul>
+
+      <h3>Escrutinio</h3>
+      <p><strong>Clase:</strong> <span class="codigo-inline">EscrutinioScene.java</span> &nbsp;|&nbsp; <strong>Tamanio:</strong> 800 x 540 px</p>
+      <ul>
+        <li><strong>Tabla</strong> con columnas: Codigo, Nombre, Partido, Votos, Porcentaje (ordenada de mayor a menor)</li>
+        <li><strong>Resumen</strong> con total de votos, total de electores habilitados y porcentaje de participacion</li>
+        <li><strong>Botones:</strong> Exportar a CSV, Volver al menu</li>
+      </ul>
+
+      <h3>Busqueda Global</h3>
+      <p><strong>Clase:</strong> <span class="codigo-inline">BusquedaScene.java</span> &nbsp;|&nbsp; <strong>Tamanio:</strong> 850 x 520 px</p>
+      <ul>
+        <li><strong>Campo de busqueda</strong> con boton "Buscar"</li>
+        <li><strong>Tabla</strong> con columnas: Tipo (Candidato/Elector/Voto) y Datos (descripcion formateada)</li>
+        <li>La busqueda es parcial y no distingue mayusculas/minusculas</li>
+      </ul>
+
+      <h3>Exportacion de Datos</h3>
+      <p><strong>Clase:</strong> <span class="codigo-inline">ExportacionScene.java</span> &nbsp;|&nbsp; <strong>Tamanio:</strong> 420 x 260 px</p>
+      <ul>
+        <li><strong>ComboBox</strong> con opciones: Candidatos, Electores, Resultados del escrutinio</li>
+        <li><strong>Boton "Exportar CSV"</strong> que abre un selector de archivo</li>
+        <li>Se genera el archivo CSV con los datos seleccionados</li>
+      </ul>
+
+      <h3>Clases de utilidad</h3>
+
+      <h4>Navegacion</h4>
+      <p>
+        Mantiene la referencia a la ventana principal (<span class="codigo-inline">Stage</span>) y tiene un metodo <span class="codigo-inline">cambiarEscena(Scene)</span> que reemplaza la pantalla actual por una nueva.
+      </p>
+
+      <h4>Dialogos</h4>
+      <p>
+        Clase utilitaria con tres metodos estaticos para mostrar ventanas emergentes:
+      </p>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Metodo</th><th>Tipo de dialogo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="code-cell">informacion(mensaje)</td><td>Mensaje informativo (icono de info)</td></tr>
+            <tr><td class="code-cell">error(mensaje)</td><td>Mensaje de error (icono de error)</td></tr>
+            <tr><td class="code-cell">confirmar(mensaje)</td><td>Pregunta de si/no (devuelve true si confirma)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Resumen visual del flujo</h3>
+      <div class="diagrama-capas">
+        <div class="capa capa-ui">LoginScene</div>
+        <div class="flecha">&#8594; admin o elector &#8594;</div>
+        <div class="capa capa-ui">MenuAdminScene &mdash; sidebar + panel derecho</div>
+        <div class="flecha">&#8592; Cada boton cambia el contenido derecho &#8594;</div>
+        <div class="capa capa-modelo">Candidatos | Electores | Escrutinio | Busqueda | Exportacion</div>
+        <div class="flecha">&#8594; "Volver al menu" &#8594;</div>
+        <div class="capa capa-ui">Bienvenida (logo VotaFacil)</div>
+      </div>
+    </section>
+
+    <hr class="separador">
+
+    <!-- Seccion 8: Excepciones -->
+    <section class="seccion" id="sec-excepciones">
+      <h2>8. Excepciones</h2>
+
+      <h3>Manejo de errores con excepciones</h3>
+      <p>
+        VotaFacil usa <strong>excepciones personalizadas</strong> para manejar errores de negocio. Son clases que extienden <span class="codigo-inline">Exception</span> (excepciones verificadas) y se lanzan cuando algo no esta permitido o hay un problema.
+      </p>
+      <p>
+        Cuando se lanza una excepcion, la capa de interfaz la captura y muestra un <strong>dialogo de error</strong> al usuario con el mensaje correspondiente.
+      </p>
+
+      <h3>CandidatoDuplicadoException</h3>
+      <div class="tarjetas">
+        <div class="tarjeta">
+          <h3>Cuando se lanza</h3>
+          <p>Cuando se intenta registrar o modificar un candidato y:</p>
+          <ul>
+            <li>El codigo ya existe en otro candidato (sin importar mayusculas/minusculas)</li>
+            <li>El nombre ya existe en otro candidato (sin importar mayusculas/minusculas)</li>
+            <li>El campo codigo o nombre esta vacio</li>
+          </ul>
+        </div>
+        <div class="tarjeta">
+          <h3>Metodos que la lanzan</h3>
+          <ul>
+            <li><span class="codigo-inline">ServicioVotacion.registrarCandidato()</span></li>
+            <li><span class="codigo-inline">ServicioVotacion.modificarCandidato()</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="nota">
+        <strong>Ejemplo:</strong> Si ya existe "CAN001 - Juan Perez" e intentas crear otro candidato con nombre "juan perez", se lanza esta excepcion porque el nombre ya existe (ignorando mayusculas).
+      </div>
+
+      <h3>ElectorDuplicadoException</h3>
+      <div class="tarjetas">
+        <div class="tarjeta">
+          <h3>Cuando se lanza</h3>
+          <p>Cuando se intenta registrar o modificar un elector y:</p>
+          <ul>
+            <li>El codigo ya existe en otro elector</li>
+            <li>La cedula ya existe en otro elector</li>
+            <li>Los campos codigo, cedula o nombre estan vacios</li>
+          </ul>
+        </div>
+        <div class="tarjeta">
+          <h3>Metodos que la lanzan</h3>
+          <ul>
+            <li><span class="codigo-inline">ServicioVotacion.registrarElector()</span></li>
+            <li><span class="codigo-inline">ServicioVotacion.modificarElector()</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>ElectorYaVotoException</h3>
+      <div class="tarjetas">
+        <div class="tarjeta">
+          <h3>Cuando se lanza</h3>
+          <p>Cuando un elector que ya emitio su voto intenta iniciar sesion de nuevo. Esto garantiza que cada persona solo pueda votar una vez.</p>
+        </div>
+        <div class="tarjeta">
+          <h3>Metodo que la lanza</h3>
+          <ul>
+            <li><span class="codigo-inline">ServicioVotacion.iniciarSesion()</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="nota-alerta nota">
+        <strong>Importante:</strong> Una vez que un elector vota, no puede volver a ingresar al sistema hasta que un administrador reinicie el proceso de votacion.
+      </div>
+
+      <h3>VotacionCerradaException</h3>
+      <div class="tarjetas">
+        <div class="tarjeta">
+          <h3>Cuando se lanza</h3>
+          <p>Cuando un elector intenta hacer alguna accion de votacion pero la votacion no esta abierta. Esto puede ocurrir en dos momentos:</p>
+          <ul>
+            <li>Al intentar iniciar sesion cuando la votacion esta cerrada</li>
+            <li>Al intentar votar cuando la votacion se cerro</li>
+          </ul>
+        </div>
+        <div class="tarjeta">
+          <h3>Metodos que la lanzan</h3>
+          <ul>
+            <li><span class="codigo-inline">ServicioVotacion.iniciarSesion()</span></li>
+            <li><span class="codigo-inline">ServicioVotacion.votar()</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>ExportacionFallidaException</h3>
+      <div class="tarjetas">
+        <div class="tarjeta">
+          <h3>Cuando se lanza</h3>
+          <p>Cuando ocurre un error de entrada/salida al intentar escribir un archivo CSV. Puede pasar por:</p>
+          <ul>
+            <li>Falta de permisos de escritura en la carpeta seleccionada</li>
+            <li>El disco esta lleno</li>
+            <li>El usuario cancelo el selector de archivos</li>
+            <li>Error inesperado de sistema de archivos</li>
+          </ul>
+        </div>
+        <div class="tarjeta">
+          <h3>Metodo que la lanza</h3>
+          <ul>
+            <li><span class="codigo-inline">CsvExporter.exportar()</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Resumen de todas las excepciones</h3>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Excepcion</th><th>Cuando ocurre</th><th>Se resuelve con</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CandidatoDuplicadoException</td>
+              <td>Codigo o nombre de candidato duplicado o vacio</td>
+              <td>Corregir los datos e intentar de nuevo</td>
+            </tr>
+            <tr>
+              <td>ElectorDuplicadoException</td>
+              <td>Codigo o cedula de elector duplicada o campos vacios</td>
+              <td>Corregir los datos e intentar de nuevo</td>
+            </tr>
+            <tr>
+              <td>ElectorYaVotoException</td>
+              <td>Un elector que ya voto intenta iniciar sesion</td>
+              <td>El elector no puede hacer nada hasta reiniciar votacion</td>
+            </tr>
+            <tr>
+              <td>VotacionCerradaException</td>
+              <td>Intentar votar o loguearse cuando la votacion esta cerrada</td>
+              <td>El admin debe abrir la votacion primero</td>
+            </tr>
+            <tr>
+              <td>ExportacionFallidaException</td>
+              <td>Error al escribir archivo CSV</td>
+              <td>Verificar permisos de escritura e intentar de nuevo</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Como se manejan en la interfaz</h3>
+      <p>
+        Todas las excepciones se capturan en los metodos de accion de los botones (por ejemplo, al hacer clic en "Agregar" o "Iniciar Sesion"). El patron es siempre el mismo:
+      </p>
+      <div class="bloque-codigo">try {
+    ServicioVotacion.algunMetodo(...);
+    Dialogos.informacion("Operacion exitosa");
+} catch (MiExcepcion ex) {
+    Dialogos.error(ex.getMessage());
+}</div>
+      <p>
+        El mensaje de la excepcion se muestra en un dialogo de error nativo de JavaFX con boton "OK".
+      </p>
+    </section>
+
+    <hr class="separador">
+
+    <!-- Seccion 9: Reglas -->
+    <section class="seccion" id="sec-reglas">
+      <h2>9. Reglas de negocio</h2>
+      <p>
+        Estas son todas las reglas que el sistema respalda. Estan implementadas en la clase <span class="codigo-inline">ServicioVotacion</span> y se aplican automaticamente cuando el usuario realiza acciones.
+      </p>
+
+      <h3>1. Credenciales del administrador</h3>
+      <div class="tarjetas">
+        <div class="tarjeta">
+          <h3>Regla</h3>
+          <p>El administrador tiene credenciales fijas que no se pueden cambiar desde la interfaz.</p>
+        </div>
+        <div class="tarjeta">
+          <h3>Valores</h3>
+          <p><strong>Usuario:</strong> <span class="codigo-inline">admin</span><br>
+          <strong>Contrasena:</strong> <span class="codigo-inline">admin123</span></p>
+        </div>
+      </div>
+      <div class="nota-alerta nota">
+        <strong>Nota de seguridad:</strong> Estas credenciales estan hardcodeadas en el codigo fuente. En un sistema de produccion se deberian guardar de forma segura (base de datos con hash de contrasena, variables de entorno, etc.).
+      </div>
+
+      <h3>2. Unicidad de candidatos</h3>
+      <p>Un candidato se identifica por dos campos que deben ser unicos en todo el sistema:</p>
+      <ul>
+        <li><strong>Codigo</strong> &mdash; Unico, sin importar mayusculas/minusculas (ej: "can001" es igual a "CAN001")</li>
+        <li><strong>Nombre</strong> &mdash; Unico, sin importar mayusculas/minusculas (ej: "juan perez" es igual a "Juan Perez")</li>
+      </ul>
+      <p>Si se intenta crear un candidato con un codigo o nombre que ya existe, se lanza <span class="codigo-inline">CandidatoDuplicadoException</span>.</p>
+
+      <h3>3. Unicidad de electores</h3>
+      <p>Un elector se identifica por dos campos que deben ser unicos:</p>
+      <ul>
+        <li><strong>Codigo</strong> &mdash; Unico, sin importar mayusculas/minusculas</li>
+        <li><strong>Cedula</strong> &mdash; Unica, exacta (distingue mayusculas/minusculas)</li>
+      </ul>
+      <p>Si se intenta crear un elector con un codigo o cedula repetida, se lanza <span class="codigo-inline">ElectorDuplicadoException</span>.</p>
+
+      <h3>4. Requisitos para abrir votacion</h3>
+      <p>La votacion no se puede abrir si no se cumplen estas condiciones minimas:</p>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Requisito</th><th>Cantidad minima</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Candidatos registrados</td><td>2 o mas</td></tr>
+            <tr><td>Electores registrados</td><td>1 o mas</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Si no se cumplen, el metodo <span class="codigo-inline">abrirVotacion()</span> devuelve un mensaje de error explicando que falta.</p>
+      <div class="nota">
+        <strong>Por que 2 candidatos minimo?</strong> Porque una votacion con solo un candidato no tiene sentido democratico.
+      </div>
+
+      <h3>5. Un voto por elector</h3>
+      <p>Cada elector puede emitir <strong>exactamente un voto</strong>. Despues de votar:</p>
+      <ul>
+        <li>Se marca al elector con <span class="codigo-inline">yaVoto = true</span></li>
+        <li>Se cierra la sesion automaticamente</li>
+        <li>Si el elector intenta iniciar sesion de nuevo, recibe un error</li>
+      </ul>
+      <div class="nota-alerta nota">
+        <strong>Importante:</strong> No hay forma de anular un voto o cambiar el candidato elegido una vez emitido.
+      </div>
+
+      <h3>6. Secreto del voto</h3>
+      <p>La identidad del elector que voto <strong>nunca se expone</strong> en:</p>
+      <ul>
+        <li>La pantalla de escrutinio (solo muestra candidato, votos y porcentaje)</li>
+        <li>Los archivos CSV exportados</li>
+        <li>La busqueda global</li>
+      </ul>
+      <p>
+        El campo <span class="codigo-inline">codigoElector</span> existe en el objeto Voto internamente, pero no se muestra en ninguna interfaz.
+      </p>
+
+      <h3>7. Bloqueo durante la votacion</h3>
+      <p>Mientras la votacion esta abierta, el administrador <strong>no puede</strong>:</p>
+      <ul>
+        <li>Agregar nuevos candidatos</li>
+        <li>Modificar candidatos existentes</li>
+        <li>Eliminar candidatos</li>
+      </ul>
+      <p>Los botones correspondientes se deshabilitan automaticamente en la interfaz. Esto garantiza que la lista de candidatos sea estable durante la votacion.</p>
+
+      <h3>8. Proteccion de electores que ya votaron</h3>
+      <p>Un elector que ya voto <strong>no puede ser modificado ni eliminado</strong> desde la interfaz de administracion.</p>
+      <p>Si el admin intenta modificarlo o eliminarlo, recibira un mensaje de error explicando que el elector ya emitio su voto.</p>
+
+      <h3>9. Proteccion de candidatos con votos</h3>
+      <p>Un candidato que tiene al menos un voto <strong>no puede ser eliminado</strong>.</p>
+      <p>Esto evita que se pierda la referencia de los votos emitidos.</p>
+
+      <h3>10. Codigo de votos secuencial</h3>
+      <p>Los codigos de voto se generan automaticamente en secuencia:</p>
+      <div class="bloque-codigo">V001, V002, V003, V004, ...</div>
+      <p>El sistema busca el ultimo codigo usado y genera el siguiente incrementando en 1.</p>
+
+      <h3>11. Persistencia automatica</h3>
+      <p>Los datos se guardan automaticamente en los archivos de texto en tres momentos:</p>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>Momento</th><th>Cuando ocurre</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Cierre de aplicacion</td><td>El usuario hace clic en la X de la ventana</td></tr>
+            <tr><td>Cierre de sesion</td><td>El admin o elector hace clic en "Cerrar Sesion"</td></tr>
+            <tr><td>Despues de votar</td><td>El elector emite su voto</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>12. Habilitacion de electores</h3>
+      <p>El campo <span class="codigo-inline">habilitado</span> de un elector funciona asi:</p>
+      <ul>
+        <li>Cuando un elector nuevo se crea, esta habilitado por defecto</li>
+        <li>El admin puede habilitarlo o deshabilitarlo desde la interfaz</li>
+        <li>Un elector deshabilitado no puede iniciar sesion</li>
+        <li><strong>Nota:</strong> El estado de habilitacion NO se guarda en archivos. Al reiniciar la aplicacion, todos los electores quedan habilitados</li>
+      </ul>
+
+      <h3>Resumen de todas las reglas</h3>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr><th>#</th><th>Regla</th><th>Consecuencia</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Credenciales fijas del admin</td><td>admin / admin123</td></tr>
+            <tr><td>2</td><td>Unicidad de candidatos</td><td>No se pueden repetir codigo ni nombre</td></tr>
+            <tr><td>3</td><td>Unicidad de electores</td><td>No se pueden repetir codigo ni cedula</td></tr>
+            <tr><td>4</td><td>Minimo 2 candidatos y 1 elector</td><td>No se puede abrir votacion sin esto</td></tr>
+            <tr><td>5</td><td>Un voto por elector</td><td>Despues de votar, no se puede volver a ingresar</td></tr>
+            <tr><td>6</td><td>Secreto del voto</td><td>La identidad del votante nunca se expone</td></tr>
+            <tr><td>7</td><td>Bloqueo durante votacion</td><td>No se puede modificar candidatos mientras se vota</td></tr>
+            <tr><td>8</td><td>Proteccion de electores que votaron</td><td>No se pueden modificar ni eliminar</td></tr>
+            <tr><td>9</td><td>Proteccion de candidatos con votos</td><td>No se pueden eliminar</td></tr>
+            <tr><td>10</td><td>Codigos secuenciales de voto</td><td>V001, V002, V003, ...</td></tr>
+            <tr><td>11</td><td>Persistencia automatica</td><td>Se guarda en cierre, logout y al votar</td></tr>
+            <tr><td>12</td><td>Habilitacion de electores</td><td>El admin puede activar/desactivar acceso</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Pie de pagina -->
+  <footer class="footer">
+    <p><strong>VotaFacil</strong> &mdash; Documentacion del proyecto &mdash; 2026</p>
+  </footer>
+
+  <script>
+    var fabBtn = document.getElementById('fabBtn');
+    var menuOverlay = document.getElementById('menuOverlay');
+
+    function alternarMenu() {
+      var abierto = menuOverlay.classList.toggle('abierto');
+      fabBtn.classList.toggle('activo', abierto);
+      fabBtn.innerHTML = abierto ? '&times;' : '&#9776;';
+    }
+
+    fabBtn.addEventListener('click', alternarMenu);
+
+    menuOverlay.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        menuOverlay.classList.remove('abierto');
+        fabBtn.classList.remove('activo');
+        fabBtn.innerHTML = '&#9776;';
+      });
+    });
+  </script>
+
+</body>
+</html>

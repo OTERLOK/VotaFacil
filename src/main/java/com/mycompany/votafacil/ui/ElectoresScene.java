@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,12 +24,6 @@ import com.mycompany.votafacil.exception.ExportacionFallidaException;
 import com.mycompany.votafacil.model.Elector;
 import com.mycompany.votafacil.service.ServicioVotacion;
 
-/**
- * Pantalla de gestión de electores. Muestra una tabla con el código, la
- * cédula, el nombre, la contraseña oculta, el estado de votación y si está
- * habilitado. Permite agregar, modificar, eliminar, habilitar y deshabilitar
- * electores.
- */
 public class ElectoresScene {
 
     private static TableView<Elector> tabla;
@@ -37,8 +32,9 @@ public class ElectoresScene {
     private static final TextField txtNombre = new TextField();
     private static final PasswordField txtContrasena = new PasswordField();
 
-    public static void mostrar() {
+    public static Parent crearContenido() {
         Label lblTitulo = new Label("Gestión de Electores");
+        lblTitulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         tabla = new TableView<>();
         tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -64,7 +60,7 @@ public class ElectoresScene {
         Button btnHabilitar = new Button("Habilitar");
         Button btnDeshabilitar = new Button("Deshabilitar");
         Button btnExportar = new Button("Exportar CSV");
-        Button btnVolver = new Button("Volver");
+        Button btnVolver = new Button("Volver al menú");
 
         btnAgregar.setOnAction(e -> agregar());
         btnCargar.setOnAction(e -> cargarSeleccionado());
@@ -73,7 +69,7 @@ public class ElectoresScene {
         btnHabilitar.setOnAction(e -> cambiarHabilitacion(true));
         btnDeshabilitar.setOnAction(e -> cambiarHabilitacion(false));
         btnExportar.setOnAction(e -> exportar());
-        btnVolver.setOnAction(e -> MenuAdminScene.mostrar());
+        btnVolver.setOnAction(e -> MenuAdminScene.mostrarBienvenida());
 
         HBox filaCampos = new HBox(8);
         filaCampos.getChildren().addAll(
@@ -89,10 +85,14 @@ public class ElectoresScene {
 
         VBox root = new VBox(10);
         root.getChildren().addAll(lblTitulo, tabla, filaCampos, filaDatos, filaBotones);
-        root.setPadding(new Insets(15));
 
         refrescarTabla();
-        Navegacion.cambiarEscena(new Scene(root, 950, 560));
+        return root;
+    }
+
+    public static void mostrar() {
+        Parent contenido = crearContenido();
+        Navegacion.cambiarEscena(new Scene(contenido, 950, 560));
     }
 
     private static void agregar() {

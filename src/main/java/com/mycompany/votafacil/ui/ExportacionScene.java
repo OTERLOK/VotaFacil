@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -18,25 +19,21 @@ import com.mycompany.votafacil.data.CsvExporter;
 import com.mycompany.votafacil.exception.ExportacionFallidaException;
 import com.mycompany.votafacil.service.ServicioVotacion;
 
-/**
- * Pantalla de exportación de datos. Permite seleccionar qué datos exportar
- * (candidatos, electores o resultados del escrutinio) y generar el archivo
- * CSV correspondiente.
- */
 public class ExportacionScene {
 
-    public static void mostrar() {
+    public static Parent crearContenido() {
         Label lblTitulo = new Label("Exportar Datos a CSV");
+        lblTitulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         ComboBox<String> combo = new ComboBox<>(FXCollections.observableArrayList(
                 "Candidatos", "Electores", "Resultados del escrutinio"));
         combo.getSelectionModel().selectFirst();
 
         Button btnExportar = new Button("Exportar CSV");
-        Button btnVolver = new Button("Volver");
+        Button btnVolver = new Button("Volver al menú");
 
         btnExportar.setOnAction(e -> exportar(combo.getValue()));
-        btnVolver.setOnAction(e -> MenuAdminScene.mostrar());
+        btnVolver.setOnAction(e -> MenuAdminScene.mostrarBienvenida());
 
         HBox filaBotones = new HBox(10);
         filaBotones.getChildren().addAll(btnExportar, btnVolver);
@@ -45,9 +42,13 @@ public class ExportacionScene {
         VBox root = new VBox(15);
         root.getChildren().addAll(lblTitulo, new Label("Seleccione los datos a exportar:"), combo, filaBotones);
         root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(30));
 
-        Navegacion.cambiarEscena(new Scene(root, 420, 260));
+        return root;
+    }
+
+    public static void mostrar() {
+        Parent contenido = crearContenido();
+        Navegacion.cambiarEscena(new Scene(contenido, 420, 260));
     }
 
     private static void exportar(String tipo) {
