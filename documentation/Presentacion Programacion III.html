@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VotaFacil — Presentación</title>
+<style>
+  :root{
+    --bg0:#070d1a; --bg1:#0b1220; --bg2:#16233b;
+    --tarjeta:rgba(30,41,59,.72); --borde:rgba(148,163,184,.18);
+    --txt:#e2e8f0; --txd:#94a3b8; --txt2:#cbd5e1;
+    --ac1:#38bdf8; --ac2:#a78bfa; --ac3:#34d399; --warn:#fbbf24; --err:#f87171;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    font-family:"Segoe UI",system-ui,Arial,sans-serif;color:var(--txt);
+    background:var(--bg0);overflow:hidden;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(60rem 40rem at 15% -10%, var(--bg2) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 110% 110%, var(--bg2) 0%, transparent 55%);
+  }
+  .deck{position:relative;height:100%;z-index:1}
+  .slide{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    justify-content:center;align-items:center;text-align:center;
+    padding:6vh 9vw 9vh;opacity:0;visibility:hidden;transform:scale(.97);
+    transition:opacity .45s ease, transform .45s ease;
+  }
+  .slide.activa{opacity:1;visibility:visible;transform:scale(1)}
+  .etiqueta{font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ac,#38bdf8);font-weight:700;margin-bottom:1.1rem}
+  h1{font-size:clamp(1.7rem,4.2vw,3.2rem);line-height:1.15;color:#fff;margin-bottom:.9rem}
+  h2{font-size:clamp(1.3rem,3vw,2.2rem);margin-bottom:1.3rem;color:#fff}
+  .subt{color:var(--txd);font-size:clamp(.88rem,1.5vw,1.1rem);max-width:62ch;line-height:1.65}
+  ul{list-style:none;max-width:74ch}
+  li{font-size:clamp(.9rem,1.6vw,1.2rem);margin:.65rem 0;line-height:1.5;text-align:left}
+  li::before{content:"▸ ";color:var(--ac,#38bdf8);font-weight:700}
+  li b,li strong{color:var(--ac,#38bdf8)}
+  .codigo{font-family:Consolas,"Courier New",monospace;background:rgba(15,23,42,.9);border:1px solid var(--borde);border-radius:6px;padding:.12rem .4rem;color:#a5f3fc;font-size:.92em}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;max-width:86ch;width:100%}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;max-width:88ch;width:100%}
+  .caja{
+    background:var(--tarjeta);border:1px solid var(--borde);border-radius:14px;
+    padding:1rem 1.15rem;text-align:left;backdrop-filter:blur(6px);
+  }
+  .caja .tit{color:var(--ac,#38bdf8);font-weight:700;font-size:.95rem;margin-bottom:.35rem;display:flex;align-items:center;gap:.45rem}
+  .caja p{font-size:.88rem;color:var(--txd);line-height:1.5}
+  .caja.destacada{border-color:var(--ac,#38bdf8);box-shadow:0 0 0 1px var(--ac,#38bdf8) inset}
+  .icono{font-size:1.05rem}
+  .chip{display:inline-flex;align-items:center;gap:.4rem;background:rgba(15,23,42,.9);border:1px solid var(--borde);border-radius:999px;padding:.3rem .85rem;font-size:.82rem;color:var(--txt2);margin:.2rem}
+  .chip b{color:var(--ac,#38bdf8)}
+  .caja.enlace{cursor:pointer;transition:transform .18s ease, border-color .2s, box-shadow .2s}
+  .caja.enlace:hover{transform:translateY(-4px);border-color:var(--ac,#38bdf8);box-shadow:0 10px 30px -12px rgba(0,0,0,.6)}
+  .caja.enlace:active{transform:translateY(-1px)}
+  .btnInicio{margin-top:1.7rem;background:var(--tarjeta);border:1px solid var(--ac,#38bdf8);color:var(--ac,#38bdf8);border-radius:999px;padding:.65rem 1.5rem;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.5rem}
+  .btnInicio:hover{background:var(--ac,#38bdf8);color:#fff;box-shadow:0 0 18px rgba(56,189,248,.4)}
+  .estado{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;background:var(--ok,#34d399);margin-right:.35rem}
+  .separador{background:radial-gradient(50rem 30rem at 50% 20%, rgba(56,189,248,.08), transparent 60%)}
+  .separador .duracion{color:var(--ac2);font-weight:700;margin-top:1.1rem;font-size:1rem;letter-spacing:.12em}
+  .duracion i{font-style:normal;margin-right:.4rem}
+  .barra{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--ac1),var(--ac2),var(--ac3));z-index:20;transition:width .3s;box-shadow:0 0 12px rgba(56,189,248,.5)}
+  .puntos{position:fixed;right:1.4vw;top:50%;transform:translateY(-50%);z-index:20;display:flex;flex-direction:column;gap:.5rem}
+  .puntos button{width:10px;height:10px;border-radius:50%;border:1px solid rgba(148,163,184,.5);background:transparent;cursor:pointer;padding:0;transition:all .2s}
+  .puntos button.on{transform:scale(1.4)}
+  .nav{position:fixed;bottom:2.6vh;left:50%;transform:translateX(-50%);z-index:20;display:flex;gap:.6rem}
+  .nav button{width:44px;height:44px;border-radius:50%;background:var(--tarjeta);color:var(--txt);border:1px solid var(--borde);font-size:1.05rem;cursor:pointer;transition:background .2s}
+  .nav button:hover{background:#334155}
+  .contador{position:fixed;bottom:3.3vh;right:2.4vw;z-index:20;font-size:.78rem;color:var(--txd);letter-spacing:.12em}
+  .hint{position:fixed;bottom:3.2vh;left:2.4vw;z-index:20;font-size:.72rem;color:#64748b}
+  .scrolly{max-height:66vh;overflow:auto;width:100%;display:flex;flex-direction:column;align-items:center;padding:.4rem}
+  .scrolly::-webkit-scrollbar{width:8px}
+  .scrolly::-webkit-scrollbar-thumb{background:#334155;border-radius:4px}
+  svg{max-width:100%;max-height:60vh;height:auto}
+  .nota{font-size:.78rem;color:var(--txd);margin-top:1rem}
+  .paso{display:flex;align-items:flex-start;gap:.7rem;background:var(--tarjeta);border:1px solid var(--borde);border-radius:10px;padding:.6rem .9rem;text-align:left;margin:.45rem 0}
+  .paso .n{flex:0 0 auto;width:1.7rem;height:1.7rem;border-radius:50%;background:rgba(56,189,248,.15);border:1px solid var(--ac,#38bdf8);color:var(--ac,#38bdf8);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+  .paso p{font-size:.92rem;color:var(--txt2);line-height:1.45}
+  .paso p small{display:block;color:var(--txd);font-size:.8rem;margin-top:.15rem}
+  .ex{color:var(--err);font-weight:700}
+  .tabla{width:100%;border-collapse:collapse;font-size:.82rem;text-align:left}
+  .tabla th{color:var(--ac,#38bdf8);border-bottom:1px solid var(--borde);padding:.45rem .6rem;font-weight:700}
+  .tabla td{border-bottom:1px solid rgba(148,163,184,.1);padding:.4rem .6rem;color:var(--txt2)}
+  .ok{color:var(--ac3)} .err{color:var(--err)} .warn{color:var(--warn)}
+</style>
+</head>
+<body>
+<div class="barra" id="barra"></div>
+<div class="puntos" id="puntos"></div>
+<div class="deck" id="deck">
+<!-- ================= PORTADA ================= -->
+  <section class="slide titulo" style="--ac:var(--ac1)">
+    <div class="etiqueta">Programación III · Ing. María Cuevas</div>
+    <h1 style="font-size:clamp(2rem,5.4vw,4rem)">VotaFacil</h1>
+    <p class="subt" style="margin-bottom:2rem">Sistema de Votación Electrónica<br><b style="color:var(--ac1)">Java</b> + <b style="color:var(--ac1)">JavaFX</b> · persistencia en archivos de texto</p>
+    <div class="grid3" style="max-width:78ch">
+      <div class="caja enlace" style="--ac:var(--ac1)" onclick="mostrar(1)"><div class="tit"><span class="icono">🧩</span>La base del sistema</div><p>Introducción, arquitectura, modelos y almacenamiento</p><p style="margin-top:.4rem;color:var(--ac1);font-weight:600">Eleazar Molina</p></div>
+      <div class="caja enlace" style="--ac:var(--ac2)" onclick="mostrar(10)"><div class="tit"><span class="icono">⚙️</span>La lógica de negocio</div><p>SistemaVotacion: las reglas del sistema</p><p style="margin-top:.4rem;color:var(--ac2);font-weight:600">Manuel Cifuentes</p></div>
+      <div class="caja enlace" style="--ac:var(--ac3)" onclick="mostrar(19)"><div class="tit"><span class="icono">🖥️</span>La interfaz</div><p>Interfaz, excepciones y exportación</p><p style="margin-top:.4rem;color:var(--ac3);font-weight:600">Manuel Cobas</p></div>
+    </div>
+  </section>
+
+  <!-- ================= SECCIÓN A ================= -->
+  <section class="slide separador" style="--ac:var(--ac1)">
+    <div class="etiqueta">La base del sistema · 8 min</div>
+    <h1>Introducción, arquitectura,<br>modelos y almacenamiento</h1>
+    <p class="subt" style="max-width:70ch;margin-top:1.2rem">Cómo está organizado VotaFacil: de las clases de datos hasta el disco.</p>
+    <button class="btnInicio" onclick="mostrar(0)">🏠 Ir a la portada</button>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac1)">
+    <div class="etiqueta">Introducción</div>
+    <h2>¿Qué es VotaFacil?</h2>
+    <p class="subt" style="margin-bottom:1.6rem">Sistema de <b style="color:var(--ac1)">votación electrónica</b> en JavaFX: el administrador gestiona el proceso y los electores emiten su voto de forma secreta.</p>
+    <div class="grid2" style="max-width:82ch">
+      <div class="caja" style="--ac:var(--ac1)"><div class="tit"><span class="icono">🗄️</span>Sin base de datos</div><p>Todo se guarda en <b style="color:var(--txt2)">archivos de texto</b> dentro de <span class="codigo">datos/</span>.</p></div>
+      <div class="caja" style="--ac:var(--ac1)"><div class="tit"><span class="icono">👥</span>Dos roles</div><p><b style="color:var(--txt2)">Administrador</b> (gestiona) y <b style="color:var(--txt2)">Electores</b> (votan).</p></div>
+    </div>
+    <p class="subt" style="margin-top:1.6rem">Flujo del sistema</p>
+    <div style="display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;justify-content:center;max-width:86ch;margin-top:.4rem">
+      <span class="chip" style="--ac:var(--ac1)"><b>Login</b></span><span class="warn">→</span>
+      <span class="chip" style="--ac:var(--ac1)"><b>Gestión</b> (CRUD)</span><span class="warn">→</span>
+      <span class="chip" style="--ac:var(--ac1)"><b>Apertura</b> votación</span><span class="warn">→</span>
+      <span class="chip" style="--ac:var(--ac1)"><b>Voto</b> secreto</span><span class="warn">→</span>
+      <span class="chip" style="--ac:var(--ac1)"><b>Escrutinio</b></span><span class="warn">→</span>
+      <span class="chip" style="--ac:var(--ac1)"><b>Exportar</b> CSV</span>
+    </div>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac1)">
+    <div class="etiqueta">Arquitectura</div>
+    <h2>Estructura del proyecto por capas</h2>
+    <svg viewBox="0 0 900 400" role="img" aria-label="Capas del proyecto">
+      <defs>
+        <marker id="flechaA" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#38bdf8"/>
+        </marker>
+      </defs>
+      <g>
+        <rect x="150" y="10" width="600" height="76" rx="14" fill="#1e293b" stroke="#38bdf8" stroke-width="1.6"/>
+        <text x="170" y="42" fill="#e2e8f0" font-size="22" font-weight="700" font-family="Consolas,monospace">ui</text>
+        <text x="170" y="68" fill="#94a3b8" font-size="14">App · cambiarEscena(Scene) · 9 escenas Scene</text>
+        <line x1="450" y1="86" x2="450" y2="114" stroke="#38bdf8" stroke-width="2" marker-end="url(#flechaA)"/>
+      </g>
+      <g>
+        <rect x="150" y="114" width="600" height="76" rx="14" fill="#1e293b" stroke="#a78bfa" stroke-width="1.6"/>
+        <text x="170" y="146" fill="#e2e8f0" font-size="22" font-weight="700" font-family="Consolas,monospace">service</text>
+        <text x="170" y="172" fill="#94a3b8" font-size="14">SistemaVotacion — lógica de negocio y persistencia</text>
+        <line x1="450" y1="190" x2="450" y2="218" stroke="#a78bfa" stroke-width="2" marker-end="url(#flechaA)"/>
+      </g>
+      <g>
+        <rect x="150" y="218" width="600" height="76" rx="14" fill="#1e293b" stroke="#34d399" stroke-width="1.6"/>
+        <text x="170" y="250" fill="#e2e8f0" font-size="22" font-weight="700" font-family="Consolas,monospace">data</text>
+        <text x="170" y="276" fill="#94a3b8" font-size="14">Archivos datos/ — candidatos.txt · electores.txt · votos.txt</text>
+        <line x1="450" y1="294" x2="450" y2="322" stroke="#34d399" stroke-width="2" marker-end="url(#flechaA)"/>
+      </g>
+      <g>
+        <rect x="150" y="322" width="600" height="66" rx="14" fill="#1e293b" stroke="#fbbf24" stroke-width="1.6"/>
+        <text x="170" y="351" fill="#e2e8f0" font-size="22" font-weight="700" font-family="Consolas,monospace">model</text>
+        <text x="170" y="374" fill="#94a3b8" font-size="14">Candidato · Elector · Voto · ResultadoEscrutinio · ResultadoBusqueda</text>
+      </g>
+    </svg>
+    <p class="nota">Cada capa depende solo de la que está debajo: <b style="color:var(--txt2)">ui → service → data → model</b></p>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac1)">
+    <div class="etiqueta">Punto de entrada</div>
+    <h2>Main.java</h2>
+    <div class="caja" style="--ac:var(--ac1);text-align:left;max-width:56ch;width:100%;font-family:Consolas,monospace;font-size:.95rem;line-height:1.7">
+      <span class="ok">public class</span> <b style="color:#a5f3fc">Main</b> {<br>
+      &nbsp;&nbsp;<span class="ok">public static void</span> <b style="color:#c4b5fd">main</b>(String[] args){<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<b style="color:#c4b5fd">Application</b>.launch(<b style="color:#a5f3fc">App</b>.<span class="ok">class</span>, args);<br>
+      &nbsp;&nbsp;}<br>
+      }
+    </div>
+    <div class="grid2" style="max-width:70ch;margin-top:1.3rem">
+      <div class="caja" style="--ac:var(--ac1)"><div class="tit"><span class="icono">🎬</span>Punto de entrada</div><p>Arranca la aplicación JavaFX con <span class="codigo">Application.launch(...)</span></p></div>
+      <div class="caja" style="--ac:var(--ac1)"><div class="tit"><span class="icono">⚠️</span>Clave del truco</div><p><b style="color:var(--txt2)">No extiende Application</b>: evita el error <i>"JavaFX runtime components are missing"</i> al ejecutar desde el IDE.</p></div>
+    </div>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac1)">
+    <div class="etiqueta">Ventana principal</div>
+    <h2>App.java — ciclo de vida</h2>
+    <svg viewBox="0 0 900 360" role="img" aria-label="Ciclo de vida de App">
+      <defs>
+        <marker id="flecha4" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#38bdf8"/>
+        </marker>
+      </defs>
+      <g>
+        <rect x="40" y="50" width="220" height="84" rx="14" fill="#1e293b" stroke="#38bdf8" stroke-width="1.6"/>
+        <text x="150" y="82" fill="#e2e8f0" font-size="17" font-weight="700" text-anchor="middle">start(Stage)</text>
+        <text x="150" y="106" fill="#94a3b8" font-size="13" text-anchor="middle">Configura la ventana</text>
+        <text x="150" y="124" fill="#94a3b8" font-size="13" text-anchor="middle">(título del stage)</text>
+        <line x1="260" y1="92" x2="318" y2="92" stroke="#38bdf8" stroke-width="2" marker-end="url(#flecha4)"/>
+      </g>
+      <g>
+        <rect x="318" y="50" width="220" height="84" rx="14" fill="#1e293b" stroke="#38bdf8" stroke-width="1.6"/>
+        <text x="428" y="82" fill="#e2e8f0" font-size="17" font-weight="700" text-anchor="middle">Carga los datos</text>
+        <text x="428" y="106" fill="#94a3b8" font-size="13" text-anchor="middle">SistemaVotacion.cargarDatos()</text>
+        <text x="428" y="124" fill="#94a3b8" font-size="13" text-anchor="middle">candidatos · electores · votos</text>
+        <line x1="538" y1="92" x2="596" y2="92" stroke="#38bdf8" stroke-width="2" marker-end="url(#flecha4)"/>
+      </g>
+      <g>
+        <rect x="596" y="50" width="240" height="84" rx="14" fill="#1e293b" stroke="#38bdf8" stroke-width="1.6"/>
+        <text x="716" y="82" fill="#e2e8f0" font-size="17" font-weight="700" text-anchor="middle">Muestra el Login</text>
+        <text x="716" y="106" fill="#94a3b8" font-size="13" text-anchor="middle">LoginScene.mostrar()</text>
+      </g>
+      <g>
+        <rect x="596" y="250" width="240" height="84" rx="14" fill="#1e293b" stroke="#fbbf24" stroke-width="1.6"/>
+        <text x="716" y="282" fill="#e2e8f0" font-size="17" font-weight="700" text-anchor="middle">setOnCloseRequest()</text>
+        <text x="716" y="306" fill="#94a3b8" font-size="13" text-anchor="middle">guarda archivos</text>
+        <text x="716" y="324" fill="#94a3b8" font-size="13" text-anchor="middle">BufferedWriter + UTF-8</text>
+        <line x1="716" y1="134" x2="716" y2="246" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#flecha4)"/>
+      </g>
+    </svg>
+    <p class="nota">Toda pantalla se muestra con <span class="codigo">App.cambiarEscena(nuevaScene)</span></p>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac1)">
+    <div class="etiqueta">Modelo · Candidato</div>
+    <h2>Clase Candidato</h2>
+    <div class="caja" style="--ac:var(--ac1);text-align:left;max-width:52ch;width:100%;font-family:Consolas,monospace;font-size:.9rem;line-height:1.65">
+      <span class="ok">class</span> <b style="color:#a5f3fc">Candidato</b> {<br>
+      &nbsp;&nbsp;<span class="ok">private String</span> codigo, nombre;<br>
+      &nbsp;&nbsp;<span class="ok">private String</span> partido, descripcion;<br>
+      &nbsp;&nbsp;<span class="err">//</span> + getters y setters<br>
+      &nbsp;&nbsp;<span class="err">//</span> + toString() / fromString() con ';'<br>
+      }
+    </div>
+    <div class="grid3" style="max-width:78ch;margin-top:1.2rem">
+      <div class="caja" style="--ac:var(--ac1)"><div class="tit"><span class="icono">🔒</span>Encapsulación</div><p>Atributos privados, acceso solo por getters/setters.</p></div>
+      <div class="caja" style="--ac:var(--ac1)"><div class="tit"><span class="icono">💾</span>Persistencia</div><p><span class="codigo">toString()</span> y <span class="codigo">fromString()</span> con separador <b style="color:var(--txt2)">';'</b></p></div>
+      <div class="caja" style="--ac:var(--ac1)"><div class="tit"><span class="icono">🔑</span>Unicidad</div><p>Código y nombre únicos en el sistema.</p></div>
+    </div>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac1)">
+    <div class="etiqueta">Modelo · Elector</div>
+    <h2>Clase Elector</h2>
+    <div class="caja" style="--ac:var(--ac1);text-align:left;max-width:56ch;width:100%;font-family:Consolas,monospace;font-size:.9rem;line-height:1.65">
+      <span class="ok">class</span> <b style="color:#a5f3fc">Elector</b> {<br>
+      &nbsp;&nbsp;<span class="ok">private String</span> codigo, cedula, nombre, contrasena;<br>
+      &nbsp;&nbsp;<span class="ok">private boolean</span> yaVoto; &nbsp;<span class="err">//</span> se guarda en archivo<br>
+      &nbsp;&nbsp;<span class="ok">private boolean</span> habilitado; &nbsp;<span class="err">//</span> SOLO en memoria<br>
+      }
+    </div>
+    <div class="grid2" style="max-width:76ch;margin-top:1.2rem">
+      <div class="caja" style="--ac:var(--ac1)"><div class="tit"><span class="icono">🗳️</span>yaVoto</div><p>Controla si el elector ya emitió su voto (no puede repetir).</p></div>
+      <div class="caja" style="--ac:var(--ac1)"><div class="tit"><span class="icono">🛡️</span>habilitado</div><p>Solo vive en memoria: habilita/deshabilita el acceso al sistema.</p></div>
+      <div class="caja" style="--ac:var(--ac1)"><div class="tit"><span class="icono">🙈</span>Contraseña oculta</div><p>En tablas se muestra con asteriscos: <span class="codigo">getContrasenaOculta()</span></p></div>
+      <div class="caja" style="--ac:var(--ac1)"><div class="tit"><span class="icono">🎯</span>Códigos reales</div><p>Electores <span class="codigo">E001..E010</span> cargados de ejemplo.</p></div>
+    </div>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac1)">
+    <div class="etiqueta">Modelo · Voto y DTOs</div>
+    <h2>Voto y DTOs (Resultados)</h2>
+    <div class="grid3" style="max-width:86ch">
+      <div class="caja" style="--ac:var(--ac1)"><div class="tit"><span class="icono">🤫</span>Voto</div><p><span class="codigo">codigoVoto · codigoElector · codigoCandidato</span></p><p style="margin-top:.3rem">Solo guarda códigos → <b style="color:var(--ac3)">voto secreto</b>.</p></div>
+      <div class="caja" style="--ac:var(--ac1)"><div class="tit"><span class="icono">📊</span>ResultadoEscrutinio</div><p>Fila de resultados: código, nombre, partido, <b style="color:var(--txt2)">votos</b> y <b style="color:var(--txt2)">porcentaje</b>.</p></div>
+      <div class="caja" style="--ac:var(--ac1)"><div class="tit"><span class="icono">🔍</span>ResultadoBusqueda</div><p>Fila de búsqueda global: <b style="color:var(--txt2)">tipo</b> (candidato/elector/voto) + datos.</p></div>
+    </div>
+    <p class="nota">Los DTOs expone <b style="color:var(--txt2)">getters</b> → las tablas los pintan con <span class="codigo">PropertyValueFactory</span></p>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac1)">
+    <div class="etiqueta">Almacenamiento</div>
+    <h2>SistemaVotacion — memoria ↔ archivos</h2>
+    <svg viewBox="0 0 900 380" role="img" aria-label="Almacenamiento">
+      <defs>
+        <marker id="flecha8a" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#38bdf8"/></marker>
+        <marker id="flecha8b" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#34d399"/></marker>
+      </defs>
+      <text x="250" y="34" fill="#e2e8f0" font-size="18" font-weight="700" text-anchor="middle">MEMORIA — ArrayList (estáticas)</text>
+      <text x="660" y="34" fill="#e2e8f0" font-size="18" font-weight="700" text-anchor="middle">DISCO — datos/</text>
+      <g>
+        <rect x="110" y="56" width="280" height="70" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="1.6"/>
+        <text x="130" y="85" fill="#a5f3fc" font-size="16" font-weight="700">Lista&lt;Candidato&gt;</text>
+        <text x="130" y="108" fill="#94a3b8" font-size="13">candidatos</text>
+      </g>
+      <g>
+        <rect x="110" y="142" width="280" height="70" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="1.6"/>
+        <text x="130" y="171" fill="#a5f3fc" font-size="16" font-weight="700">Lista&lt;Elector&gt;</text>
+        <text x="130" y="194" fill="#94a3b8" font-size="13">electores</text>
+      </g>
+      <g>
+        <rect x="110" y="228" width="280" height="70" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="1.6"/>
+        <text x="130" y="257" fill="#a5f3fc" font-size="16" font-weight="700">Lista&lt;Voto&gt;</text>
+        <text x="130" y="280" fill="#94a3b8" font-size="13">votos</text>
+      </g>
+      <g>
+        <rect x="520" y="56" width="280" height="70" rx="12" fill="#1e293b" stroke="#34d399" stroke-width="1.6"/>
+        <text x="540" y="85" fill="#6ee7b7" font-size="16" font-weight="700">candidatos.txt</text>
+        <text x="540" y="108" fill="#94a3b8" font-size="13">un objeto por línea, ';'</text>
+      </g>
+      <g>
+        <rect x="520" y="142" width="280" height="70" rx="12" fill="#1e293b" stroke="#34d399" stroke-width="1.6"/>
+        <text x="540" y="171" fill="#6ee7b7" font-size="16" font-weight="700">electores.txt</text>
+        <text x="540" y="194" fill="#94a3b8" font-size="13">un objeto por línea, ';'</text>
+      </g>
+      <g>
+        <rect x="520" y="228" width="280" height="70" rx="12" fill="#1e293b" stroke="#34d399" stroke-width="1.6"/>
+        <text x="540" y="257" fill="#6ee7b7" font-size="16" font-weight="700">votos.txt</text>
+        <text x="540" y="280" fill="#94a3b8" font-size="13">un objeto por línea, ';'</text>
+      </g>
+      <g>
+        <line x1="385" y1="83" x2="515" y2="83" stroke="#38bdf8" stroke-width="2" marker-end="url(#flecha8a)"/>
+        <text x="450" y="73" fill="#38bdf8" font-size="12" font-weight="700" text-anchor="middle">leer</text>
+        <line x1="515" y1="99" x2="385" y2="99" stroke="#34d399" stroke-width="2" marker-end="url(#flecha8b)"/>
+        <text x="450" y="120" fill="#34d399" font-size="12" font-weight="700" text-anchor="middle">guardar</text>
+        <line x1="385" y1="169" x2="515" y2="169" stroke="#38bdf8" stroke-width="2" marker-end="url(#flecha8a)"/>
+        <text x="450" y="159" fill="#38bdf8" font-size="12" font-weight="700" text-anchor="middle">leer</text>
+        <line x1="515" y1="185" x2="385" y2="185" stroke="#34d399" stroke-width="2" marker-end="url(#flecha8b)"/>
+        <text x="450" y="206" fill="#34d399" font-size="12" font-weight="700" text-anchor="middle">guardar</text>
+        <line x1="385" y1="255" x2="515" y2="255" stroke="#38bdf8" stroke-width="2" marker-end="url(#flecha8a)"/>
+        <text x="450" y="245" fill="#38bdf8" font-size="12" font-weight="700" text-anchor="middle">leer</text>
+        <line x1="515" y1="271" x2="385" y2="271" stroke="#34d399" stroke-width="2" marker-end="url(#flecha8b)"/>
+        <text x="450" y="292" fill="#34d399" font-size="12" font-weight="700" text-anchor="middle">guardar</text>
+      </g>
+      <rect x="120" y="330" width="660" height="40" rx="10" fill="rgba(30,41,59,.6)" stroke="rgba(148,163,184,.18)"/>
+      <text x="450" y="355" fill="#94a3b8" font-size="14" text-anchor="middle">Separador ';' · UTF-8 · BufferedReader / BufferedWriter + try-with-resources</text>
+    </svg>
+  </section>
+
+  <!-- ================= SECCIÓN B ================= -->
+  <section class="slide separador" style="--ac:var(--ac2)">
+    <div class="etiqueta">La lógica de negocio · 8 min</div>
+    <h1>Lógica de negocio:<br>SistemaVotacion</h1>
+    <p class="subt" style="max-width:70ch;margin-top:1.2rem">Las reglas del sistema, todas en una sola clase de métodos estáticos.</p>
+    <button class="btnInicio" onclick="mostrar(0)">🏠 Ir a la portada</button>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac2)">
+    <div class="etiqueta">Servicio</div>
+    <h2>La clase SistemaVotacion</h2>
+    <svg viewBox="0 0 900 370" role="img" aria-label="SistemaVotacion">
+      <defs>
+        <marker id="flechaB" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#a78bfa"/></marker>
+      </defs>
+      <g>
+        <rect x="300" y="130" width="300" height="120" rx="18" fill="#1e293b" stroke="#a78bfa" stroke-width="2"/>
+        <text x="450" y="172" fill="#c4b5fd" font-size="22" font-weight="700" text-anchor="middle">SistemaVotacion</text>
+        <text x="450" y="198" fill="#94a3b8" font-size="14" text-anchor="middle">métodos estáticos</text>
+        <text x="450" y="222" fill="#e2e8f0" font-size="14" text-anchor="middle">estado: votacionAbierta · codigoElectorActual</text>
+      </g>
+      <g>
+        <rect x="40" y="40" width="200" height="56" rx="12" fill="#1e293b" stroke="rgba(148,163,184,.18)"/>
+        <text x="140" y="66" fill="#e2e8f0" font-size="15" font-weight="700" text-anchor="middle">🔐 iniciarSesion()</text>
+        <text x="140" y="84" fill="#94a3b8" font-size="12" text-anchor="middle">autenticación</text>
+        <line x1="240" y1="78" x2="296" y2="158" stroke="#a78bfa" stroke-width="1.8" marker-end="url(#flechaB)"/>
+      </g>
+      <g>
+        <rect x="660" y="40" width="200" height="56" rx="12" fill="#1e293b" stroke="rgba(148,163,184,.18)"/>
+        <text x="760" y="66" fill="#e2e8f0" font-size="15" font-weight="700" text-anchor="middle">🗳️ abrir/cerrar/votar()</text>
+        <text x="760" y="84" fill="#94a3b8" font-size="12" text-anchor="middle">control de votación</text>
+        <line x1="660" y1="78" x2="604" y2="158" stroke="#a78bfa" stroke-width="1.8" marker-end="url(#flechaB)"/>
+      </g>
+      <g>
+        <rect x="660" y="250" width="200" height="56" rx="12" fill="#1e293b" stroke="rgba(148,163,184,.18)"/>
+        <text x="760" y="276" fill="#e2e8f0" font-size="15" font-weight="700" text-anchor="middle">📊 contarVotos()</text>
+        <text x="760" y="294" fill="#94a3b8" font-size="12" text-anchor="middle">escrutinio + burbuja</text>
+        <line x1="660" y1="262" x2="604" y2="212" stroke="#a78bfa" stroke-width="1.8" marker-end="url(#flechaB)"/>
+      </g>
+      <g>
+        <rect x="40" y="250" width="200" height="56" rx="12" fill="#1e293b" stroke="rgba(148,163,184,.18)"/>
+        <text x="140" y="276" fill="#e2e8f0" font-size="15" font-weight="700" text-anchor="middle">📝 registrar/eliminar()</text>
+        <text x="140" y="294" fill="#94a3b8" font-size="12" text-anchor="middle">candidatos y electores</text>
+        <line x1="240" y1="262" x2="296" y2="212" stroke="#a78bfa" stroke-width="1.8" marker-end="url(#flechaB)"/>
+      </g>
+      <g>
+        <rect x="350" y="20" width="200" height="48" rx="12" fill="#1e293b" stroke="rgba(148,163,184,.18)"/>
+        <text x="450" y="48" fill="#e2e8f0" font-size="14" font-weight="700" text-anchor="middle">🔍 buscarGlobal()</text>
+        <line x1="450" y1="68" x2="450" y2="126" stroke="#a78bfa" stroke-width="1.8" marker-end="url(#flechaB)"/>
+      </g>
+      <g>
+        <rect x="350" y="290" width="200" height="48" rx="12" fill="#1e293b" stroke="rgba(148,163,184,.18)"/>
+        <text x="450" y="318" fill="#e2e8f0" font-size="14" font-weight="700" text-anchor="middle">📄 filas...CSV()</text>
+        <line x1="450" y1="290" x2="450" y2="250" stroke="#a78bfa" stroke-width="1.8" marker-end="url(#flechaB)"/>
+      </g>
+    </svg>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac2)">
+    <div class="etiqueta">Autenticación</div>
+    <h2>iniciarSesion() — decisiones en cadena</h2>
+    <svg viewBox="0 0 900 430" role="img" aria-label="Flujo de login">
+      <defs>
+        <marker id="flechaF" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#a78bfa"/></marker>
+        <marker id="flechaR" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#f87171"/></marker>
+        <marker id="flechaO" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#34d399"/></marker>
+      </defs>
+      <g>
+        <rect x="300" y="8" width="300" height="40" rx="20" fill="#1e293b" stroke="#a78bfa" stroke-width="1.6"/>
+        <text x="450" y="33" fill="#e2e8f0" font-size="15" font-weight="700" text-anchor="middle">Inicio de sesión</text>
+        <line x1="450" y1="48" x2="450" y2="74" stroke="#a78bfa" stroke-width="2" marker-end="url(#flechaF)"/>
+      </g>
+      <g>
+        <rect x="300" y="74" width="300" height="40" rx="12" fill="#1e293b" stroke="#a78bfa" stroke-width="1.6"/>
+        <text x="450" y="99" fill="#e2e8f0" font-size="14" text-anchor="middle">¿Es el admin? · ¿contraseña correcta?</text>
+        <line x1="450" y1="114" x2="450" y2="140" stroke="#a78bfa" stroke-width="2" marker-end="url(#flechaF)"/>
+      </g>
+      <g>
+        <rect x="300" y="140" width="300" height="40" rx="12" fill="#1e293b" stroke="#a78bfa" stroke-width="1.6"/>
+        <text x="450" y="165" fill="#e2e8f0" font-size="14" text-anchor="middle">¿Existe el elector? (por código)</text>
+        <line x1="450" y1="180" x2="450" y2="206" stroke="#a78bfa" stroke-width="2" marker-end="url(#flechaF)"/>
+      </g>
+      <g>
+        <rect x="300" y="206" width="300" height="40" rx="12" fill="#1e293b" stroke="#a78bfa" stroke-width="1.6"/>
+        <text x="450" y="231" fill="#e2e8f0" font-size="14" text-anchor="middle">¿Coincide la contraseña?</text>
+        <line x1="450" y1="246" x2="450" y2="272" stroke="#a78bfa" stroke-width="2" marker-end="url(#flechaF)"/>
+      </g>
+      <g>
+        <rect x="300" y="272" width="300" height="40" rx="12" fill="#1e293b" stroke="#a78bfa" stroke-width="1.6"/>
+        <text x="450" y="297" fill="#e2e8f0" font-size="14" text-anchor="middle">¿Está habilitado?</text>
+        <line x1="450" y1="312" x2="450" y2="338" stroke="#a78bfa" stroke-width="2" marker-end="url(#flechaF)"/>
+      </g>
+      <g>
+        <rect x="300" y="338" width="300" height="40" rx="12" fill="#1e293b" stroke="#fbbf24" stroke-width="1.6"/>
+        <text x="450" y="363" fill="#e2e8f0" font-size="14" text-anchor="middle">¿Ya votó? · ¿Votación abierta?</text>
+        <line x1="450" y1="378" x2="450" y2="404" stroke="#34d399" stroke-width="2" marker-end="url(#flechaO)"/>
+      </g>
+      <g>
+        <rect x="360" y="404" width="180" height="24" rx="12" fill="rgba(52,211,153,.15)" stroke="#34d399"/>
+        <text x="450" y="420" fill="#6ee7b7" font-size="13" font-weight="700" text-anchor="middle">✓ "elector"</text>
+      </g>
+      <g>
+        <rect x="620" y="60" width="250" height="52" rx="12" fill="rgba(248,113,113,.12)" stroke="#f87171"/>
+        <text x="745" y="82" fill="#fca5a5" font-size="13" text-anchor="middle">Falla → mensaje de error</text>
+        <text x="745" y="100" fill="#f87171" font-size="12" text-anchor="middle">no registrado · contraseña · deshabilitado</text>
+        <line x1="600" y1="97" x2="618" y2="84" stroke="#f87171" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#flechaR)"/>
+      </g>
+      <g>
+        <rect x="620" y="340" width="250" height="62" rx="12" fill="rgba(248,113,113,.12)" stroke="#f87171"/>
+        <text x="745" y="362" fill="#fca5a5" font-size="13" text-anchor="middle">❌ ElectorYaVotoException</text>
+        <text x="745" y="380" fill="#fca5a5" font-size="13" text-anchor="middle">❌ VotacionCerradaException</text>
+        <line x1="600" y1="369" x2="618" y2="369" stroke="#f87171" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#flechaR)"/>
+      </g>
+    </svg>
+    <p class="nota">Devuelve <span class="codigo">"admin"</span>, <span class="codigo">"elector"</span> o un <b style="color:var(--err)">mensaje de error</b> según el caso</p>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac2)">
+    <div class="etiqueta">CRUD Candidatos</div>
+    <h2>Gestión de candidatos</h2>
+    <div class="grid3" style="max-width:80ch">
+      <div class="caja" style="--ac:var(--ac2)"><div class="tit"><span class="icono">➕</span>Registrar</div><p>Valida <b style="color:var(--txt2)">código y nombre únicos</b>.</p><p style="margin-top:.3rem" class="err">CandidatoDuplicadoException</p></div>
+      <div class="caja" style="--ac:var(--ac2)"><div class="tit"><span class="icono">✏️</span>Modificar</div><p>Bloqueado mientras la votación esté <b style="color:var(--txt2)">abierta</b>.</p></div>
+      <div class="caja" style="--ac:var(--ac2)"><div class="tit"><span class="icono">🗑️</span>Eliminar</div><p>Prohibido si <b style="color:var(--txt2)">tiene votos</b> o la votación está abierta.</p></div>
+    </div>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac2)">
+    <div class="etiqueta">CRUD Electores</div>
+    <h2>Gestión de electores</h2>
+    <div class="grid2" style="max-width:78ch">
+      <div class="caja" style="--ac:var(--ac2)"><div class="tit"><span class="icono">➕</span>Registrar</div><p>Valida <b style="color:var(--txt2)">código y cédula únicos</b>.</p><p style="margin-top:.3rem" class="err">ElectorDuplicadoException</p></div>
+      <div class="caja" style="--ac:var(--ac2)"><div class="tit"><span class="icono">🔁</span>Modificar / Eliminar</div><p>Bloqueado si el elector <b style="color:var(--txt2)">ya votó</b>.</p></div>
+      <div class="caja" style="--ac:var(--ac2)"><div class="tit"><span class="icono">⚡</span>Habilitar / Deshabilitar</div><p>Controla quién puede iniciar sesión en el sistema.</p></div>
+      <div class="caja" style="--ac:var(--ac2)"><div class="tit"><span class="icono">🔒</span>Regla clave</div><p>El estado <span class="codigo">habilitado</span> no se guarda: se aplica en memoria.</p></div>
+    </div>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac2)">
+    <div class="etiqueta">Proceso electoral</div>
+    <h2>Control de la votación</h2>
+    <svg viewBox="0 0 900 300" role="img" aria-label="Ciclo de votación">
+      <defs>
+        <marker id="flecha5" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#a78bfa"/></marker>
+      </defs>
+      <g>
+        <rect x="30" y="90" width="180" height="120" rx="14" fill="#1e293b" stroke="#a78bfa" stroke-width="1.6"/>
+        <text x="120" y="130" fill="#e2e8f0" font-size="16" font-weight="700" text-anchor="middle">abrirVotacion()</text>
+        <text x="120" y="152" fill="#94a3b8" font-size="12.5" text-anchor="middle">guarda:</text>
+        <text x="120" y="170" fill="#94a3b8" font-size="12.5" text-anchor="middle">≥ 2 candidatos</text>
+        <text x="120" y="188" fill="#94a3b8" font-size="12.5" text-anchor="middle">≥ 1 elector</text>
+        <text x="120" y="206" fill="#fbbf24" font-size="12" text-anchor="middle">si no → aviso</text>
+        <line x1="210" y1="150" x2="256" y2="150" stroke="#a78bfa" stroke-width="2" marker-end="url(#flecha5)"/>
+      </g>
+      <g>
+        <rect x="256" y="90" width="180" height="120" rx="14" fill="#1e293b" stroke="#a78bfa" stroke-width="1.6"/>
+        <text x="346" y="130" fill="#e2e8f0" font-size="16" font-weight="700" text-anchor="middle">votar()</text>
+        <text x="346" y="152" fill="#94a3b8" font-size="12.5" text-anchor="middle">V001, V002...</text>
+        <text x="346" y="170" fill="#94a3b8" font-size="12.5" text-anchor="middle">voto secreto</text>
+        <text x="346" y="188" fill="#fbbf24" font-size="12.5" text-anchor="middle">marca yaVoto</text>
+        <text x="346" y="206" fill="#fbbf24" font-size="12.5" text-anchor="middle">cierra sesión</text>
+        <line x1="436" y1="150" x2="482" y2="150" stroke="#a78bfa" stroke-width="2" marker-end="url(#flecha5)"/>
+      </g>
+      <g>
+        <rect x="482" y="90" width="180" height="120" rx="14" fill="#1e293b" stroke="#a78bfa" stroke-width="1.6"/>
+        <text x="572" y="130" fill="#e2e8f0" font-size="16" font-weight="700" text-anchor="middle">cerrarVotacion()</text>
+        <text x="572" y="152" fill="#94a3b8" font-size="12.5" text-anchor="middle">detiene la emisión</text>
+        <text x="572" y="170" fill="#94a3b8" font-size="12.5" text-anchor="middle">votacionAbierta = false</text>
+        <text x="572" y="206" fill="#94a3b8" font-size="12.5" text-anchor="middle">habilita escrutinio</text>
+        <line x1="662" y1="150" x2="708" y2="150" stroke="#a78bfa" stroke-width="2" marker-end="url(#flecha5)"/>
+      </g>
+      <g>
+        <rect x="708" y="90" width="160" height="120" rx="14" fill="rgba(167,139,250,.12)" stroke="#a78bfa" stroke-width="1.8"/>
+        <text x="788" y="150" fill="#c4b5fd" font-size="16" font-weight="700" text-anchor="middle">Escrutinio</text>
+        <text x="788" y="172" fill="#94a3b8" font-size="12.5" text-anchor="middle">se desbloquea</text>
+        <text x="788" y="190" fill="#94a3b8" font-size="12.5" text-anchor="middle">en el menú admin</text>
+      </g>
+    </svg>
+    <p class="nota">Estado global <span class="codigo">votacionAbierta</span> decide qué acciones están permitidas</p>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac2)">
+    <div class="etiqueta">Estadísticas</div>
+    <h2>Escrutinio — conteo y orden</h2>
+    <svg viewBox="0 0 900 340" role="img" aria-label="Gráfico de barras">
+      <g>
+        <line x1="80" y1="60" x2="80" y2="260" stroke="#475569" stroke-width="2"/>
+        <line x1="80" y1="260" x2="860" y2="260" stroke="#475569" stroke-width="2"/>
+        <text x="70" y="64" fill="#94a3b8" font-size="13" text-anchor="end">50%</text>
+        <text x="70" y="164" fill="#94a3b8" font-size="13" text-anchor="end">25%</text>
+        <text x="70" y="264" fill="#94a3b8" font-size="13" text-anchor="end">0%</text>
+        <line x1="80" y1="160" x2="860" y2="160" stroke="rgba(148,163,184,.15)" stroke-dasharray="4 4"/>
+      </g>
+      <g>
+        <rect x="120" y="60" width="130" height="200" rx="8" fill="rgba(167,139,250,.55)" stroke="#a78bfa" stroke-width="2"/>
+        <text x="185" y="285" fill="#e2e8f0" font-size="14" font-weight="700" text-anchor="middle">CAN001 · 40</text>
+        <text x="185" y="52" fill="#c4b5fd" font-size="16" font-weight="700" text-anchor="middle">43.5%</text>
+      </g>
+      <g>
+        <rect x="290" y="140" width="130" height="120" rx="8" fill="rgba(167,139,250,.45)" stroke="#a78bfa" stroke-width="2"/>
+        <text x="355" y="285" fill="#e2e8f0" font-size="14" font-weight="700" text-anchor="middle">CAN002 · 24</text>
+        <text x="355" y="132" fill="#c4b5fd" font-size="16" font-weight="700" text-anchor="middle">26.1%</text>
+      </g>
+      <g>
+        <rect x="460" y="200" width="130" height="60" rx="8" fill="rgba(167,139,250,.4)" stroke="#a78bfa" stroke-width="2"/>
+        <text x="525" y="285" fill="#e2e8f0" font-size="14" font-weight="700" text-anchor="middle">CAN004 · 16</text>
+        <text x="525" y="192" fill="#c4b5fd" font-size="16" font-weight="700" text-anchor="middle">17.4%</text>
+      </g>
+      <g>
+        <rect x="630" y="180" width="130" height="80" rx="8" fill="rgba(167,139,250,.35)" stroke="#a78bfa" stroke-width="2"/>
+        <text x="695" y="285" fill="#e2e8f0" font-size="14" font-weight="700" text-anchor="middle">CAN003 · 12</text>
+        <text x="695" y="172" fill="#c4b5fd" font-size="16" font-weight="700" text-anchor="middle">13%</text>
+      </g>
+      <text x="820" y="40" fill="#94a3b8" font-size="13" text-anchor="end">total = 92 votos</text>
+    </svg>
+    <p class="nota"><span class="codigo">contarVotos()</span> recorre el arreglo · ordena de mayor a menor con el <b style="color:var(--ac2)">método de la burbuja</b> · calcula porcentajes y participación</p>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac2)">
+    <div class="etiqueta">Búsqueda</div>
+    <h2>Búsqueda global</h2>
+    <svg viewBox="0 0 900 320" role="img" aria-label="Búsqueda global">
+      <defs>
+        <marker id="flecha7" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#a78bfa"/></marker>
+      </defs>
+      <g>
+        <rect x="320" y="20" width="260" height="60" rx="14" fill="#1e293b" stroke="#a78bfa" stroke-width="1.6"/>
+        <text x="450" y="48" fill="#e2e8f0" font-size="16" font-weight="700" text-anchor="middle">🔍 texto del usuario</text>
+        <text x="450" y="68" fill="#94a3b8" font-size="12.5" text-anchor="middle">toLowerCase() + contains()</text>
+        <line x1="450" y1="80" x2="450" y2="96" stroke="#a78bfa" stroke-width="2"/>
+      </g>
+      <g>
+        <line x1="210" y1="96" x2="690" y2="96" stroke="#a78bfa" stroke-width="2"/>
+        <line x1="210" y1="96" x2="210" y2="114" stroke="#a78bfa" stroke-width="2" marker-end="url(#flecha7)"/>
+        <line x1="450" y1="96" x2="450" y2="114" stroke="#a78bfa" stroke-width="2" marker-end="url(#flecha7)"/>
+        <line x1="690" y1="96" x2="690" y2="114" stroke="#a78bfa" stroke-width="2" marker-end="url(#flecha7)"/>
+      </g>
+      <g>
+        <rect x="110" y="114" width="200" height="64" rx="12" fill="#1e293b" stroke="rgba(148,163,184,.18)"/>
+        <text x="210" y="142" fill="#e2e8f0" font-size="15" font-weight="700" text-anchor="middle">Candidatos</text>
+        <text x="210" y="163" fill="#94a3b8" font-size="12" text-anchor="middle">código · nombre · partido · descripción</text>
+      </g>
+      <g>
+        <rect x="350" y="114" width="200" height="64" rx="12" fill="#1e293b" stroke="rgba(148,163,184,.18)"/>
+        <text x="450" y="142" fill="#e2e8f0" font-size="15" font-weight="700" text-anchor="middle">Electores</text>
+        <text x="450" y="163" fill="#94a3b8" font-size="12" text-anchor="middle">código · cédula · nombre</text>
+      </g>
+      <g>
+        <rect x="590" y="114" width="200" height="64" rx="12" fill="#1e293b" stroke="rgba(148,163,184,.18)"/>
+        <text x="690" y="142" fill="#e2e8f0" font-size="15" font-weight="700" text-anchor="middle">Votos</text>
+        <text x="690" y="163" fill="#94a3b8" font-size="12" text-anchor="middle">código voto · candidato</text>
+      </g>
+      <g>
+        <line x1="210" y1="178" x2="210" y2="192" stroke="#a78bfa" stroke-width="2"/>
+        <line x1="450" y1="178" x2="450" y2="192" stroke="#a78bfa" stroke-width="2"/>
+        <line x1="690" y1="178" x2="690" y2="192" stroke="#a78bfa" stroke-width="2"/>
+        <line x1="210" y1="192" x2="690" y2="192" stroke="#a78bfa" stroke-width="2"/>
+        <line x1="450" y1="192" x2="450" y2="220" stroke="#a78bfa" stroke-width="2" marker-end="url(#flecha7)"/>
+      </g>
+      <g>
+        <rect x="300" y="220" width="300" height="60" rx="14" fill="rgba(167,139,250,.12)" stroke="#a78bfa" stroke-width="1.6"/>
+        <text x="450" y="248" fill="#c4b5fd" font-size="16" font-weight="700" text-anchor="middle">ResultadoBusqueda</text>
+        <text x="450" y="268" fill="#94a3b8" font-size="12.5" text-anchor="middle">tipo + datos → una sola tabla</text>
+      </g>
+        <text x="450" y="308" fill="#94a3b8" font-size="12.5" text-anchor="middle">Los resultados se muestran en la tabla Tipo · Datos</text>
+    </svg>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac2)">
+    <div class="etiqueta">Exportación</div>
+    <h2>Preparación de datos CSV</h2>
+    <div class="grid3" style="max-width:82ch">
+      <div class="caja" style="--ac:var(--ac2)"><div class="tit"><span class="icono">🧾</span>filasCandidatosCSV()</div><p>Cabecera + filas <span class="codigo">String[]</span> de candidatos.</p></div>
+      <div class="caja" style="--ac:var(--ac2)"><div class="tit"><span class="icono">🧾</span>filasElectoresCSV()</div><p>Cabecera + filas <span class="codigo">String[]</span> (código, cédula, nombre, estado).</p></div>
+      <div class="caja" style="--ac:var(--ac2)"><div class="tit"><span class="icono">🧾</span>filasEscrutinioCSV()</div><p>Cabecera + filas con votos y porcentajes.</p></div>
+    </div>
+    <div class="caja" style="--ac:var(--ac2);max-width:66ch;width:100%;margin-top:1.2rem;text-align:left">
+      <div class="tit"><span class="icono">📤</span>¿Quién escribe el archivo?</div>
+      <p style="font-size:.95rem"><span class="codigo" style="color:#c4b5fd">SistemaVotacion.exportarCSV(archivo, cabeceras, filas)</span> escribe el archivo <span class="codigo">.csv</span> donde el usuario elige (FileChooser)</p>
+    </div>
+  </section>
+
+  <!-- ================= SECCIÓN C ================= -->
+  <section class="slide separador" style="--ac:var(--ac3)">
+    <div class="etiqueta">La interfaz · 8 min</div>
+    <h1>Interfaz, excepciones<br>y exportación</h1>
+    <p class="subt" style="max-width:70ch;margin-top:1.2rem">Las pantallas JavaFX, el manejo de errores y el CSV final.</p>
+    <button class="btnInicio" onclick="mostrar(0)">🏠 Ir a la portada</button>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac3)">
+    <div class="etiqueta">Interfaz · organización</div>
+    <h2>Organización de la interfaz</h2>
+    <div class="grid3" style="max-width:82ch">
+      <div class="caja" style="--ac:var(--ac3)"><div class="tit"><span class="icono">🧭</span>App</div><p>Centro de navegación: <span class="codigo">cambiarEscena(Scene)</span> cambia de pantalla.</p></div>
+      <div class="caja" style="--ac:var(--ac3)"><div class="tit"><span class="icono">💬</span>Alert</div><p>Avisos <b style="color:var(--txt2)">error · información · confirmación</b> de JavaFX.</p></div>
+      <div class="caja" style="--ac:var(--ac3)"><div class="tit"><span class="icono">🧱</span>9 escenas</div><p>Login, menús, CRUD, votación, escrutinio, búsqueda… cada pantalla con una responsabilidad.</p></div>
+    </div>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac3)">
+    <div class="etiqueta">Pantalla de login</div>
+    <h2>Pantalla de login</h2>
+    <svg viewBox="0 0 900 340" role="img" aria-label="Login">
+      <defs>
+        <linearGradient id="btnGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fdfdfd"/><stop offset="1" stop-color="#e3e3e3"/>
+        </linearGradient>
+      </defs>
+      <g>
+        <rect x="240" y="14" width="420" height="300" rx="6" fill="#f4f4f4" stroke="#b5b5b5"/>
+        <text x="450" y="60" fill="#1f2937" font-size="19" font-weight="700" text-anchor="middle">Sistema de Votación Electrónica</text>
+        <text x="315" y="104" fill="#374151" font-size="13">Usuario:</text>
+        <rect x="315" y="112" width="270" height="30" rx="3" fill="#fff" stroke="#9aa0a6"/>
+        <text x="325" y="131" fill="#9ca3af" font-size="12">Código del elector o admin</text>
+        <text x="315" y="176" fill="#374151" font-size="13">Contraseña:</text>
+        <rect x="315" y="184" width="270" height="30" rx="3" fill="#fff" stroke="#9aa0a6"/>
+        <text x="325" y="203" fill="#6b7280" font-size="13">● ● ● ● ● ● ● ●</text>
+        <rect x="330" y="240" width="240" height="36" rx="4" fill="url(#btnGrad)" stroke="#b5b5b5"/>
+        <text x="450" y="263" fill="#1f2937" font-size="13.5" font-weight="600" text-anchor="middle">Iniciar Sesión</text>
+        <text x="450" y="300" fill="#6b7280" font-size="11.5" text-anchor="middle">admin/admin123 · electores E001..E010</text>
+      </g>
+      <g>
+        <rect x="40" y="60" width="180" height="88" rx="12" fill="#1e293b" stroke="#34d399" stroke-width="1.6"/>
+        <text x="130" y="86" fill="#e2e8f0" font-size="13.5" font-weight="700" text-anchor="middle">VBox centrado</text>
+        <text x="130" y="108" fill="#94a3b8" font-size="11.5" text-anchor="middle">Label + TextField +</text>
+        <text x="130" y="124" fill="#94a3b8" font-size="11.5" text-anchor="middle">PasswordField</text>
+        <text x="130" y="140" fill="#a7f3d0" font-size="11.5" text-anchor="middle">escena 480 × 320</text>
+      </g>
+      <g>
+        <rect x="680" y="60" width="180" height="88" rx="12" fill="rgba(52,211,153,.12)" stroke="#34d399"/>
+        <text x="770" y="86" fill="#6ee7b7" font-size="13.5" font-weight="700" text-anchor="middle">iniciarSesion()</text>
+        <text x="770" y="108" fill="#94a3b8" font-size="11.5" text-anchor="middle">"admin" → menú admin</text>
+        <text x="770" y="124" fill="#94a3b8" font-size="11.5" text-anchor="middle">"elector" → menú elector</text>
+        <text x="770" y="140" fill="#f87171" font-size="11.5" text-anchor="middle">error → Alert</text>
+      </g>
+    </svg>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac3)">
+    <div class="etiqueta">Menú del administrador</div>
+    <h2>Menú del administrador</h2>
+    <div class="grid2" style="max-width:84ch">
+      <div class="caja" style="--ac:var(--ac3);padding:0;overflow:hidden">
+        <svg viewBox="0 0 460 500" role="img" aria-label="Mockup menú administrador">
+          <defs>
+            <linearGradient id="btnGrad3" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#fdfdfd"/><stop offset="1" stop-color="#e3e3e3"/>
+            </linearGradient>
+          </defs>
+          <rect x="20" y="14" width="420" height="470" rx="6" fill="#f4f4f4" stroke="#b5b5b5"/>
+          <text x="230" y="56" fill="#1f2937" font-size="16.5" font-weight="700" text-anchor="middle">Menú del Administrador</text>
+          <rect x="120" y="84" width="200" height="34" rx="4" fill="url(#btnGrad3)" stroke="#b5b5b5"/>
+          <text x="220" y="106" fill="#1f2937" font-size="12.5" font-weight="600" text-anchor="middle">Gestionar Candidatos</text>
+          <rect x="120" y="131" width="200" height="34" rx="4" fill="url(#btnGrad3)" stroke="#b5b5b5"/>
+          <text x="220" y="153" fill="#1f2937" font-size="12.5" font-weight="600" text-anchor="middle">Gestionar Electores</text>
+          <rect x="120" y="178" width="200" height="34" rx="4" fill="url(#btnGrad3)" stroke="#b5b5b5"/>
+          <text x="220" y="200" fill="#1f2937" font-size="12.5" font-weight="600" text-anchor="middle">Abrir Votación</text>
+          <rect x="120" y="225" width="200" height="34" rx="4" fill="#e5e5e5" stroke="#d0d0d0"/>
+          <text x="220" y="247" fill="#9ca3af" font-size="12.5" font-weight="600" text-anchor="middle">Ver Escrutinio</text>
+          <rect x="120" y="272" width="200" height="34" rx="4" fill="url(#btnGrad3)" stroke="#b5b5b5"/>
+          <text x="220" y="294" fill="#1f2937" font-size="12.5" font-weight="600" text-anchor="middle">Búsqueda Global</text>
+          <rect x="120" y="319" width="200" height="34" rx="4" fill="url(#btnGrad3)" stroke="#b5b5b5"/>
+          <text x="220" y="341" fill="#1f2937" font-size="12.5" font-weight="600" text-anchor="middle">Exportar Datos</text>
+          <rect x="120" y="366" width="200" height="34" rx="4" fill="url(#btnGrad3)" stroke="#b5b5b5"/>
+          <text x="220" y="388" fill="#1f2937" font-size="12.5" font-weight="600" text-anchor="middle">Cerrar Sesión</text>
+          <text x="230" y="440" fill="#6b7280" font-size="11.5" text-anchor="middle">● votación cerrada · botón 3 → Cerrar Votación</text>
+          <text x="230" y="462" fill="#9ca3af" font-size="11.5" text-anchor="middle">Ver Escrutinio se habilita al cerrar la votación</text>
+        </svg>
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:center;gap:.7rem">
+        <div class="caja" style="--ac:var(--ac3)"><div class="tit"><span class="icono">🧭</span>VBox centrado 440×440</div><p>Título y <b style="color:var(--txt2)">7 botones apilados</b> en el centro de la pantalla.</p></div>
+        <div class="caja" style="--ac:var(--ac3)"><div class="tit"><span class="icono">🔘</span>7 botones</div><p>Gestionar Candidatos · Gestionar Electores · Abrir/Cerrar Votación · Ver Escrutinio · Búsqueda Global · Exportar Datos · Cerrar Sesión.</p></div>
+        <div class="caja" style="--ac:var(--ac3)"><div class="tit"><span class="icono">🟢</span>Votación en vivo</div><p>El botón alterna entre <b style="color:var(--ac3)">Abrir Votación</b> y <b style="color:var(--warn)">Cerrar Votación</b>.</p></div>
+        <div class="caja" style="--ac:var(--ac3)"><div class="tit"><span class="icono">🚫</span>Escrutinio bloqueado</div><p>Se <b style="color:var(--txt2)">deshabilita</b> (gris) mientras la votación está abierta.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac3)">
+    <div class="etiqueta">Gestión de candidatos</div>
+    <h2>Formularios de Candidatos y Electores</h2>
+    <svg viewBox="0 0 1000 600" role="img" aria-label="Tabla CRUD">
+      <defs>
+        <linearGradient id="btnGrad4" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fdfdfd"/><stop offset="1" stop-color="#e3e3e3"/>
+        </linearGradient>
+      </defs>
+      <rect x="16" y="12" width="968" height="576" rx="6" fill="#f4f4f4" stroke="#b5b5b5"/>
+      <text x="36" y="48" fill="#1f2937" font-size="16.5" font-weight="700">Gestión de Candidatos</text>
+      <rect x="36" y="62" width="928" height="212" fill="#fff" stroke="#c9c9c9"/>
+      <rect x="36" y="62" width="928" height="30" fill="#e6e6e6" stroke="#d4d4d4"/>
+      <line x1="220" y1="62" x2="220" y2="274" stroke="#d4d4d4"/>
+      <line x1="420" y1="62" x2="420" y2="274" stroke="#d4d4d4"/>
+      <line x1="620" y1="62" x2="620" y2="274" stroke="#d4d4d4"/>
+      <text x="118" y="82" fill="#1f2937" font-size="12" font-weight="700" text-anchor="middle">Código</text>
+      <text x="320" y="82" fill="#1f2937" font-size="12" font-weight="700" text-anchor="middle">Nombre</text>
+      <text x="522" y="82" fill="#1f2937" font-size="12" font-weight="700" text-anchor="middle">Partido</text>
+      <text x="724" y="82" fill="#1f2937" font-size="12" font-weight="700" text-anchor="middle">Descripción</text>
+      <rect x="36" y="92" width="928" height="30" fill="#cfe8f6"/>
+      <text x="118" y="110" fill="#374151" font-size="12" text-anchor="middle">CAN001</text>
+      <text x="320" y="110" fill="#374151" font-size="12" text-anchor="middle">Juan Pérez</text>
+      <text x="522" y="110" fill="#374151" font-size="12" text-anchor="middle">Partido Progreso</text>
+      <text x="724" y="110" fill="#4b5563" font-size="11.5" text-anchor="middle">Educación gratuita, salud…</text>
+      <text x="118" y="140" fill="#374151" font-size="12" text-anchor="middle">CAN002</text>
+      <text x="320" y="140" fill="#374151" font-size="12" text-anchor="middle">María González</text>
+      <text x="522" y="140" fill="#374151" font-size="12" text-anchor="middle">Partido Unión</text>
+      <text x="724" y="140" fill="#4b5563" font-size="11.5" text-anchor="middle">Seguridad ciudadana…</text>
+      <rect x="36" y="152" width="928" height="30" fill="#f7f7f7"/>
+      <text x="118" y="170" fill="#374151" font-size="12" text-anchor="middle">CAN003</text>
+      <text x="320" y="170" fill="#374151" font-size="12" text-anchor="middle">Carlos Rodríguez</text>
+      <text x="522" y="170" fill="#374151" font-size="12" text-anchor="middle">Partido Demócrata</text>
+      <text x="724" y="170" fill="#4b5563" font-size="11.5" text-anchor="middle">Transparencia y lucha…</text>
+      <text x="118" y="200" fill="#374151" font-size="12" text-anchor="middle">CAN004</text>
+      <text x="320" y="200" fill="#374151" font-size="12" text-anchor="middle">Ana Martínez</text>
+      <text x="522" y="200" fill="#374151" font-size="12" text-anchor="middle">Partido Fuerza</text>
+      <text x="724" y="200" fill="#4b5563" font-size="11.5" text-anchor="middle">Apoyo a emprendedores…</text>
+      <text x="36" y="324" fill="#374151" font-size="12.5">Código:</text>
+      <rect x="88" y="312" width="130" height="26" rx="3" fill="#fff" stroke="#9aa0a6"/>
+      <text x="96" y="329" fill="#374151" font-size="12">CAN001</text>
+      <text x="238" y="324" fill="#374151" font-size="12.5">Nombre:</text>
+      <rect x="292" y="312" width="240" height="26" rx="3" fill="#fff" stroke="#9aa0a6"/>
+      <text x="300" y="329" fill="#374151" font-size="12">Juan Pérez</text>
+      <text x="548" y="324" fill="#374151" font-size="12.5">Partido:</text>
+      <rect x="602" y="312" width="170" height="26" rx="3" fill="#fff" stroke="#9aa0a6"/>
+      <text x="610" y="329" fill="#374151" font-size="12">Partido Progreso</text>
+      <text x="36" y="366" fill="#374151" font-size="12.5">Descripción:</text>
+      <rect x="120" y="354" width="650" height="26" rx="3" fill="#fff" stroke="#9aa0a6"/>
+      <text x="128" y="371" fill="#374151" font-size="11.5">Educación gratuita, salud y vivienda para todos</text>
+      <rect x="36" y="408" width="96" height="32" rx="4" fill="url(#btnGrad4)" stroke="#b5b5b5"/>
+      <text x="84" y="428" fill="#1f2937" font-size="12" font-weight="600" text-anchor="middle">Agregar</text>
+      <rect x="144" y="408" width="150" height="32" rx="4" fill="url(#btnGrad4)" stroke="#b5b5b5"/>
+      <text x="219" y="428" fill="#1f2937" font-size="12" font-weight="600" text-anchor="middle">Cargar seleccionado</text>
+      <rect x="306" y="408" width="104" height="32" rx="4" fill="url(#btnGrad4)" stroke="#b5b5b5"/>
+      <text x="358" y="428" fill="#1f2937" font-size="12" font-weight="600" text-anchor="middle">Modificar</text>
+      <rect x="422" y="408" width="96" height="32" rx="4" fill="url(#btnGrad4)" stroke="#b5b5b5"/>
+      <text x="470" y="428" fill="#1f2937" font-size="12" font-weight="600" text-anchor="middle">Eliminar</text>
+      <rect x="530" y="408" width="116" height="32" rx="4" fill="url(#btnGrad4)" stroke="#b5b5b5"/>
+      <text x="588" y="428" fill="#1f2937" font-size="12" font-weight="600" text-anchor="middle">Exportar CSV</text>
+      <rect x="658" y="408" width="86" height="32" rx="4" fill="url(#btnGrad4)" stroke="#b5b5b5"/>
+      <text x="701" y="428" fill="#1f2937" font-size="12" font-weight="600" text-anchor="middle">Volver</text>
+      <text x="36" y="478" fill="#6b7280" font-size="11.5">Con la votación abierta, los botones Agregar / Modificar / Eliminar se deshabilitan.</text>
+        <text x="36" y="500" fill="#6b7280" font-size="11.5">Electores añade las columnas Cédula, Contraseña (oculta), Estado y Habilitado.</text>
+      <text x="36" y="522" fill="#9ca3af" font-size="11">Exportar CSV abre un diálogo para guardar el archivo (FileChooser).</text>
+    </svg>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac3)">
+    <div class="etiqueta">Pantalla de votación</div>
+    <h2>Pantalla de votación</h2>
+    <svg viewBox="0 0 800 540" role="img" aria-label="Pantalla de votación">
+      <defs>
+        <linearGradient id="btnGrad5" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fdfdfd"/><stop offset="1" stop-color="#e3e3e3"/>
+        </linearGradient>
+      </defs>
+      <rect x="20" y="12" width="760" height="516" rx="6" fill="#f4f4f4" stroke="#b5b5b5"/>
+      <text x="40" y="50" fill="#1f2937" font-size="16" font-weight="700">Seleccione el candidato de su preferencia:</text>
+      <rect x="40" y="64" width="720" height="280" fill="#fff" stroke="#c9c9c9"/>
+      <rect x="40" y="64" width="720" height="30" fill="#e6e6e6" stroke="#d4d4d4"/>
+      <line x1="320" y1="64" x2="320" y2="344" stroke="#d4d4d4"/>
+      <line x1="540" y1="64" x2="540" y2="344" stroke="#d4d4d4"/>
+      <text x="210" y="84" fill="#1f2937" font-size="12" font-weight="700" text-anchor="middle">Nombre</text>
+      <text x="430" y="84" fill="#1f2937" font-size="12" font-weight="700" text-anchor="middle">Partido</text>
+      <text x="650" y="84" fill="#1f2937" font-size="12" font-weight="700" text-anchor="middle">Descripción</text>
+      <rect x="40" y="94" width="720" height="30" fill="#cfe8f6"/>
+      <text x="210" y="112" fill="#374151" font-size="12" text-anchor="middle">Juan Pérez</text>
+      <text x="430" y="112" fill="#374151" font-size="12" text-anchor="middle">Partido Progreso</text>
+      <text x="650" y="112" fill="#4b5563" font-size="11.5" text-anchor="middle">Educación gratuita, salud…</text>
+      <text x="210" y="142" fill="#374151" font-size="12" text-anchor="middle">María González</text>
+      <text x="430" y="142" fill="#374151" font-size="12" text-anchor="middle">Partido Unión</text>
+      <text x="650" y="142" fill="#4b5563" font-size="11.5" text-anchor="middle">Seguridad ciudadana…</text>
+      <rect x="40" y="154" width="720" height="30" fill="#f7f7f7"/>
+      <text x="210" y="172" fill="#374151" font-size="12" text-anchor="middle">Carlos Rodríguez</text>
+      <text x="430" y="172" fill="#374151" font-size="12" text-anchor="middle">Partido Demócrata</text>
+      <text x="650" y="172" fill="#4b5563" font-size="11.5" text-anchor="middle">Transparencia y lucha…</text>
+      <text x="210" y="202" fill="#374151" font-size="12" text-anchor="middle">Ana Martínez</text>
+      <text x="430" y="202" fill="#374151" font-size="12" text-anchor="middle">Partido Fuerza</text>
+      <text x="650" y="202" fill="#4b5563" font-size="11.5" text-anchor="middle">Apoyo a emprendedores…</text>
+      <text x="400" y="372" fill="#9ca3af" font-size="11.5" text-anchor="middle">Seleccione una fila para habilitar el botón Votar</text>
+      <rect x="240" y="386" width="110" height="34" rx="4" fill="url(#btnGrad5)" stroke="#b5b5b5"/>
+      <text x="295" y="408" fill="#1f2937" font-size="12.5" font-weight="600" text-anchor="middle">Votar</text>
+      <rect x="370" y="386" width="130" height="34" rx="4" fill="url(#btnGrad5)" stroke="#b5b5b5"/>
+      <text x="435" y="408" fill="#1f2937" font-size="12.5" font-weight="600" text-anchor="middle">Cerrar Sesión</text>
+      <text x="400" y="452" fill="#374151" font-size="12.5" text-anchor="middle">Confirmación con Alert → agradecimiento → cierre de sesión automático</text>
+      <text x="400" y="480" fill="#b91c1c" font-size="12" text-anchor="middle">VotacionCerradaException · ElectorYaVotoException</text>
+    </svg>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac3)">
+    <div class="etiqueta">Resultados y búsqueda</div>
+    <h2>Resultados y búsqueda</h2>
+    <div class="grid2" style="max-width:80ch">
+      <div class="caja" style="--ac:var(--ac3)"><div class="tit"><span class="icono">📊</span>Escrutinio</div><p>Tabla <b style="color:var(--txt2)">ordenada de mayor a menor</b> con columnas Código, Nombre, Partido, Votos y Porcentaje.</p><p style="margin-top:.35rem">Resumen: total de votos emitidos, electores habilitados y % de participación.</p></div>
+      <div class="caja" style="--ac:var(--ac3)"><div class="tit"><span class="icono">🔍</span>Búsqueda global</div><p>Un solo campo busca en <b style="color:var(--txt2)">candidatos, electores y votos</b> a la vez.</p><p style="margin-top:.35rem">Resultados consolidados en una tabla con columnas <b style="color:var(--txt2)">Tipo</b> y <b style="color:var(--txt2)">Datos</b>.</p></div>
+    </div>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac3)">
+    <div class="etiqueta">Exportación</div>
+    <h2>exportarCSV — escribir el archivo</h2>
+    <svg viewBox="0 0 900 330" role="img" aria-label="Exportación CSV">
+      <defs>
+        <marker id="flechaC7" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#34d399"/></marker>
+      </defs>
+      <g>
+        <rect x="60" y="60" width="200" height="80" rx="12" fill="#1e293b" stroke="#34d399" stroke-width="1.6"/>
+        <text x="160" y="92" fill="#e2e8f0" font-size="14" font-weight="700" text-anchor="middle">filas...CSV()</text>
+        <text x="160" y="112" fill="#94a3b8" font-size="12" text-anchor="middle">SistemaVotacion</text>
+        <text x="160" y="130" fill="#94a3b8" font-size="12" text-anchor="middle">String[] filas + cabeceras</text>
+        <line x1="260" y1="100" x2="330" y2="100" stroke="#34d399" stroke-width="2" marker-end="url(#flechaC7)"/>
+      </g>
+      <g>
+        <rect x="330" y="60" width="240" height="80" rx="12" fill="rgba(52,211,153,.12)" stroke="#34d399" stroke-width="1.8"/>
+        <text x="450" y="92" fill="#6ee7b7" font-size="14" font-weight="700" text-anchor="middle">exportarCSV()</text>
+        <text x="450" y="112" fill="#94a3b8" font-size="12" text-anchor="middle">recibe: archivo · cabeceras</text>
+        <text x="450" y="130" fill="#94a3b8" font-size="12" text-anchor="middle">· filas String[]</text>
+        <line x1="570" y1="100" x2="640" y2="100" stroke="#34d399" stroke-width="2" marker-end="url(#flechaC7)"/>
+      </g>
+      <g>
+        <rect x="640" y="60" width="200" height="80" rx="12" fill="#1e293b" stroke="#34d399" stroke-width="1.6"/>
+        <text x="740" y="92" fill="#e2e8f0" font-size="14" font-weight="700" text-anchor="middle">archivo .csv</text>
+        <text x="740" y="112" fill="#94a3b8" font-size="12" text-anchor="middle">FileChooser elige dónde</text>
+        <text x="740" y="130" fill="#94a3b8" font-size="12" text-anchor="middle">BufferedWriter · UTF-8</text>
+      </g>
+      <g>
+        <rect x="60" y="180" width="780" height="120" rx="12" fill="#0f172a" stroke="rgba(148,163,184,.2)"/>
+        <text x="90" y="210" fill="#94a3b8" font-size="12.5" font-weight="700">Dentro del CSV</text>
+        <text x="90" y="240" fill="#a7f3d0" font-size="13" font-family="Consolas,monospace">Codigo,Nombre,Partido,Descripcion</text>
+        <text x="90" y="262" fill="#e2e8f0" font-size="13" font-family="Consolas,monospace">CAN001,Juan Pérez,Partido Progreso,"Educación gratuita, salud y vivienda"</text>
+        <text x="90" y="284" fill="#e2e8f0" font-size="13" font-family="Consolas,monospace">CAN002,María González,Partido Unión,Seguridad ciudadana y empleo</text>
+      </g>
+    </svg>
+    <p class="nota">Campos con comas o comillas → se <b style="color:var(--txt2)">escapan entre comillas dobles</b> · try-with-resources cierra el archivo solo</p>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac3)">
+    <div class="etiqueta">Errores</div>
+    <h2>Las 5 excepciones propias</h2>
+    <svg viewBox="0 0 900 320" role="img" aria-label="Jerarquía de excepciones">
+      <defs>
+        <marker id="flecha8c" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#f87171"/></marker>
+      </defs>
+      <g>
+        <rect x="330" y="16" width="240" height="52" rx="14" fill="#1e293b" stroke="#f87171" stroke-width="1.8"/>
+        <text x="450" y="39" fill="#fca5a5" font-size="16" font-weight="700" text-anchor="middle">Exception</text>
+        <text x="450" y="58" fill="#94a3b8" font-size="12" text-anchor="middle">java.lang</text>
+      </g>
+      <g>
+        <rect x="30" y="120" width="250" height="52" rx="12" fill="#1e293b" stroke="rgba(148,163,184,.25)"/>
+        <text x="155" y="143" fill="#e2e8f0" font-size="14" font-weight="700" text-anchor="middle">CandidatoDuplicado</text>
+        <text x="155" y="161" fill="#94a3b8" font-size="11.5" text-anchor="middle">código o nombre repetido</text>
+      </g>
+      <g>
+        <rect x="290" y="120" width="250" height="52" rx="12" fill="#1e293b" stroke="rgba(148,163,184,.25)"/>
+        <text x="415" y="143" fill="#e2e8f0" font-size="14" font-weight="700" text-anchor="middle">ElectorDuplicado</text>
+        <text x="415" y="161" fill="#94a3b8" font-size="11.5" text-anchor="middle">código o cédula repetida</text>
+      </g>
+      <g>
+        <rect x="550" y="120" width="250" height="52" rx="12" fill="#1e293b" stroke="rgba(148,163,184,.25)"/>
+        <text x="675" y="143" fill="#e2e8f0" font-size="14" font-weight="700" text-anchor="middle">ElectorYaVoto</text>
+        <text x="675" y="161" fill="#94a3b8" font-size="11.5" text-anchor="middle">intenta votar dos veces</text>
+      </g>
+      <g>
+        <rect x="160" y="196" width="250" height="52" rx="12" fill="#1e293b" stroke="rgba(148,163,184,.25)"/>
+        <text x="285" y="219" fill="#e2e8f0" font-size="14" font-weight="700" text-anchor="middle">VotacionCerrada</text>
+        <text x="285" y="237" fill="#94a3b8" font-size="11.5" text-anchor="middle">votar con votación cerrada</text>
+      </g>
+      <g>
+        <rect x="420" y="196" width="250" height="52" rx="12" fill="#1e293b" stroke="rgba(148,163,184,.25)"/>
+        <text x="545" y="219" fill="#e2e8f0" font-size="14" font-weight="700" text-anchor="middle">ExportacionFallida</text>
+        <text x="545" y="237" fill="#94a3b8" font-size="11.5" text-anchor="middle">no se pudo escribir el CSV</text>
+      </g>
+      <g>
+        <line x1="450" y1="68" x2="450" y2="90" stroke="#f87171" stroke-width="1.8"/>
+        <line x1="155" y1="90" x2="675" y2="90" stroke="#f87171" stroke-width="1.8"/>
+        <line x1="155" y1="90" x2="155" y2="120" stroke="#f87171" stroke-width="1.8" marker-end="url(#flecha8c)"/>
+        <line x1="415" y1="90" x2="415" y2="120" stroke="#f87171" stroke-width="1.8" marker-end="url(#flecha8c)"/>
+        <line x1="675" y1="90" x2="675" y2="120" stroke="#f87171" stroke-width="1.8" marker-end="url(#flecha8c)"/>
+        <line x1="285" y1="90" x2="285" y2="196" stroke="#f87171" stroke-width="1.8" marker-end="url(#flecha8c)"/>
+        <line x1="545" y1="90" x2="545" y2="196" stroke="#f87171" stroke-width="1.8" marker-end="url(#flecha8c)"/>
+      </g>
+      <g>
+        <rect x="230" y="272" width="440" height="40" rx="10" fill="rgba(52,211,153,.12)" stroke="#34d399"/>
+        <text x="450" y="296" fill="#6ee7b7" font-size="13.5" font-weight="700" text-anchor="middle">Capturadas en ui → se muestran con Alert (error/información)</text>
+      </g>
+    </svg>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac3)">
+    <div class="etiqueta">Cierre</div>
+    <h2>Conclusión</h2>
+    <div class="grid2" style="max-width:80ch">
+      <div class="caja destacada" style="--ac:var(--ac3)"><div class="tit"><span class="icono">🧩</span>Separación por capas</div><p>ui → service → model: cada parte con una única responsabilidad.</p></div>
+      <div class="caja destacada" style="--ac:var(--ac3)"><div class="tit"><span class="icono">⚙️</span>Reglas centralizadas</div><p>Todo el negocio vive en SistemaVotacion.</p></div>
+      <div class="caja destacada" style="--ac:var(--ac3)"><div class="tit"><span class="icono">🗄️</span>Persistencia portable</div><p>Archivos de texto simples, sin base de datos.</p></div>
+      <div class="caja destacada" style="--ac:var(--ac3)"><div class="tit"><span class="icono">🛡️</span>Errores y seguridad</div><p>Excepciones propias, contraseñas ocultas y voto secreto.</p></div>
+    </div>
+  </section>
+
+  <section class="slide" style="--ac:var(--ac3)">
+    <div class="etiqueta">VotaFacil</div>
+    <h1 style="font-size:clamp(2rem,5vw,3.6rem)">¡Gracias!</h1>
+    <p class="subt" style="margin-top:1.2rem">VotaFacil — Sistema de Votación Electrónica</p>
+    <div style="display:flex;gap:.7rem;margin-top:1.8rem;flex-wrap:wrap;justify-content:center">
+      <span class="chip" style="--ac:var(--ac1)">🧩 Arquitectura y almacenamiento</span>
+      <span class="chip" style="--ac:var(--ac2)">⚙️ Lógica de negocio</span>
+      <span class="chip" style="--ac:var(--ac3)">🖥️ Interfaz y exportación</span>
+    </div>
+  </section>
+
+</div>
+<div class="nav">
+  <button id="btnAnt" title="Anterior">◀</button>
+  <button id="btnSig" title="Siguiente">▶</button>
+</div>
+<div class="contador" id="contador">1 / 1</div>
+<div class="hint">← → / espacio navegar · F = pantalla completa · clic en los puntos a la derecha</div>
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let actual = 0;
+  const colorSeccion = i => {
+    if (i === 0 || i === slides.length - 1) return '#94a3b8';
+    if (i >= 1 && i <= 9) return '#38bdf8';
+    if (i >= 10 && i <= 18) return '#a78bfa';
+    return '#34d399';
+  };
+  const colores = slides.map((_, i) => colorSeccion(i));
+  const puntosEl = document.getElementById('puntos');
+  slides.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.setAttribute('aria-label', 'Diapositiva ' + (i + 1));
+    b.style.borderColor = colores[i];
+    b.onclick = () => mostrar(i);
+    puntosEl.appendChild(b);
+  });
+  function mostrar(i){
+    actual = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, idx) => s.classList.toggle('activa', idx === actual));
+    const dots = document.querySelectorAll('.puntos button');
+    dots.forEach((p, idx) => {
+      const c = colores[idx];
+      const on = idx === actual;
+      p.classList.toggle('on', on);
+      p.style.background = on ? c : 'transparent';
+      p.style.boxShadow = on ? '0 0 8px ' + c : 'none';
+    });
+    document.getElementById('contador').textContent = (actual + 1) + ' / ' + slides.length;
+    document.getElementById('barra').style.width = ((actual + 1) / slides.length * 100) + '%';
+  }
+  document.getElementById('btnSig').onclick = () => mostrar(actual + 1);
+  document.getElementById('btnAnt').onclick = () => mostrar(actual - 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ e.preventDefault(); mostrar(actual + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); mostrar(actual - 1); }
+    else if (e.key === 'Home') mostrar(0);
+    else if (e.key === 'End') mostrar(slides.length - 1);
+    else if (e.key.toLowerCase() === 'f'){
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+      else document.exitFullscreen().catch(() => {});
+    }
+  });
+  mostrar(0);
+</script>
+</body>
+</html>

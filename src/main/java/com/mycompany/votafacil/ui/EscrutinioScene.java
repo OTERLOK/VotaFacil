@@ -18,6 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 import com.mycompany.votafacil.data.CsvExporter;
+import com.mycompany.votafacil.data.DatosVotacion;
 import com.mycompany.votafacil.exception.ExportacionFallidaException;
 import com.mycompany.votafacil.model.Candidato;
 import com.mycompany.votafacil.model.ResultadoEscrutinio;
@@ -44,6 +45,33 @@ public class EscrutinioScene {
         colPorcentaje.setCellValueFactory(new PropertyValueFactory<>("porcentaje"));
         tabla.getColumns().addAll(colCodigo, colNombre, colPartido, colVotos, colPorcentaje);
 
+        Label lblResumen = new Label();
+
+        Button btnActualizar = new Button("Actualizar");
+        Button btnExportar = new Button("Exportar a CSV");
+        Button btnVolver = new Button("Volver al menú");
+
+        btnActualizar.setOnAction(e -> {
+            DatosVotacion.cargar();
+            actualizarTabla(tabla, lblResumen);
+            Dialogos.informacion("Datos Actualizados.");
+        });
+        btnExportar.setOnAction(e -> exportar());
+        btnVolver.setOnAction(e -> MenuAdminScene.mostrarBienvenida());
+
+        HBox filaBotones = new HBox(10);
+        filaBotones.getChildren().addAll(btnActualizar, btnExportar, btnVolver);
+        filaBotones.setAlignment(Pos.CENTER);
+
+        actualizarTabla(tabla, lblResumen);
+
+        VBox root = new VBox(10);
+        root.getChildren().addAll(lblTitulo, tabla, lblResumen, filaBotones);
+
+        return root;
+    }
+
+    private static void actualizarTabla(TableView<ResultadoEscrutinio> tabla, Label lblResumen) {
         ArrayList<ResultadoEscrutinio> filas = new ArrayList<>();
         for (Candidato c : ServicioVotacion.candidatosPorVotosDesc()) {
             int votos = ServicioVotacion.contarVotos(c.getCodigo());
@@ -52,25 +80,10 @@ public class EscrutinioScene {
         }
         tabla.setItems(FXCollections.observableArrayList(filas));
 
-        Label lblResumen = new Label("Total de votos emitidos: " + ServicioVotacion.totalVotosEmitidos()
+        lblResumen.setText("Total de votos emitidos: " + ServicioVotacion.totalVotosEmitidos()
                 + "   |   Total de electores habilitados: " + ServicioVotacion.totalElectoresHabilitados()
                 + "   |   Porcentaje de participación: "
                 + String.format("%.1f%%", ServicioVotacion.porcentajeParticipacion()));
-
-        Button btnExportar = new Button("Exportar a CSV");
-        Button btnVolver = new Button("Volver al menú");
-
-        btnExportar.setOnAction(e -> exportar());
-        btnVolver.setOnAction(e -> MenuAdminScene.mostrarBienvenida());
-
-        HBox filaBotones = new HBox(10);
-        filaBotones.getChildren().addAll(btnExportar, btnVolver);
-        filaBotones.setAlignment(Pos.CENTER);
-
-        VBox root = new VBox(10);
-        root.getChildren().addAll(lblTitulo, tabla, lblResumen, filaBotones);
-
-        return root;
     }
 
     public static void mostrar() {

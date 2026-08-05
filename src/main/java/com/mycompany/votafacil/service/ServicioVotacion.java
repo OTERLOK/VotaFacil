@@ -33,20 +33,20 @@ public class ServicioVotacion {
 
     /**
      * Verifica las credenciales. Devuelve "admin", "elector" o un mensaje de
-     * error. Para los electores valida contraseña, habilitación, estado de
-     * voto y que la votación esté abierta.
+     * error. Para los electores valida la cédula y contraseña, habilitación,
+     * estado de voto y que la votación esté abierta.
      */
-    public static String iniciarSesion(String usuario, String contrasena)
+    public static String iniciarSesion(String cedula, String contrasena)
             throws VotacionCerradaException, ElectorYaVotoException {
-        if (ADMIN_USUARIO.equals(usuario)) {
+        if (ADMIN_USUARIO.equals(cedula)) {
             if (ADMIN_CONTRASENA.equals(contrasena)) {
                 return "admin";
             }
             return "La contraseña del administrador es incorrecta.";
         }
-        Elector elector = buscarElectorPorCodigo(usuario);
+        Elector elector = buscarElectorPorCedula(cedula);
         if (elector == null) {
-            return "El código ingresado no está registrado como elector.";
+            return "La cédula ingresada no está registrada como elector.";
         }
         if (!elector.getContrasena().equals(contrasena)) {
             return "La contraseña no coincide con el elector.";
@@ -191,6 +191,8 @@ public class ServicioVotacion {
 
     /**
      * Abre la votación si existen al menos dos candidatos y un elector.
+     * Antes de abrir una nueva votación reinicia el escrutinio: borra los
+     * votos anteriores y marca a todos los electores como pendientes.
      * Devuelve un mensaje de error o null si se abrió correctamente.
      */
     public static String abrirVotacion() {
@@ -200,8 +202,21 @@ public class ServicioVotacion {
         if (DatosVotacion.electores.size() < 1) {
             return "No se puede abrir la votación: se requiere al menos un elector registrado.";
         }
+        reiniciarEscrutinio();
         votacionAbierta = true;
         return null;
+    }
+
+    /**
+     * Reinicia el escrutinio para una nueva votación: borra los votos
+     * anteriores y marca a todos los electores como pendientes de votar.
+     */
+    private static void reiniciarEscrutinio() {
+        DatosVotacion.votos.clear();
+        for (Elector e : DatosVotacion.electores) {
+            e.setYaVoto(false);
+        }
+        DatosVotacion.guardar();
     }
 
     public static void cerrarVotacion() {
@@ -388,6 +403,15 @@ public class ServicioVotacion {
     public static Elector buscarElectorPorCodigo(String codigo) {
         for (Elector e : DatosVotacion.electores) {
             if (e.getCodigo().equalsIgnoreCase(codigo)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    public static Elector buscarElectorPorCedula(String cedula) {
+        for (Elector e : DatosVotacion.electores) {
+            if (e.getCedula().equals(cedula.trim())) {
                 return e;
             }
         }

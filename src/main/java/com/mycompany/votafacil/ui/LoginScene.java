@@ -39,12 +39,12 @@ public class LoginScene {
         linea.setStroke(Color.web("#bdc3c7"));
         linea.setStrokeWidth(2);
 
-        Label lblUsuario = new Label("Usuario");
-        lblUsuario.setStyle("-fx-text-fill: #2c3e50; -fx-font-size: 13px; -fx-font-weight: bold;");
-        TextField txtUsuario = new TextField();
-        txtUsuario.setPromptText("Código del elector o admin");
-        txtUsuario.setPrefWidth(280);
-        txtUsuario.setStyle("-fx-font-size: 13px; -fx-padding: 8 10;");
+        Label lblCedula = new Label("Cédula");
+        lblCedula.setStyle("-fx-text-fill: #2c3e50; -fx-font-size: 13px; -fx-font-weight: bold;");
+        TextField txtCedula = new TextField();
+        txtCedula.setPromptText("Número de cédula");
+        txtCedula.setPrefWidth(280);
+        txtCedula.setStyle("-fx-font-size: 13px; -fx-padding: 8 10;");
 
         Label lblContrasena = new Label("Contraseña");
         lblContrasena.setStyle("-fx-text-fill: #2c3e50; -fx-font-size: 13px; -fx-font-weight: bold;");
@@ -80,12 +80,12 @@ public class LoginScene {
                 "-fx-cursor: hand; " +
                 "-fx-background-radius: 4;"));
 
-        btnIniciar.setOnAction(e -> iniciarSesion(txtUsuario.getText(), txtContrasena.getText()));
+        btnIniciar.setOnAction(e -> iniciarSesion(txtCedula.getText(), txtContrasena.getText()));
 
         VBox logoBox = new VBox(8, logo, nombre, linea, slogan);
         logoBox.setAlignment(Pos.CENTER);
 
-        VBox camposBox = new VBox(12, lblUsuario, txtUsuario, lblContrasena, txtContrasena);
+        VBox camposBox = new VBox(12, lblCedula, txtCedula, lblContrasena, txtContrasena);
         camposBox.setAlignment(Pos.CENTER);
         VBox.setMargin(camposBox, new Insets(30, 0, 0, 0));
 

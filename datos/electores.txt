@@ -8,3 +8,4 @@ E007;78901234;Diego Morales;clavejkl;false
 E008;89012345;Valentina Castro;clavemno;false
 E009;90123456;Santiago Ramos;clavepqr;false
 E010;11223344;Isabella Flores;clavestu;false
+E011;31103724;Manuel Cobas;test1234;false
